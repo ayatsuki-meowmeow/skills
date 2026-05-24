@@ -1,5 +1,5 @@
 ---
-name: ts-coding-rules
+name: ts-type-safety
 description: |
   TypeScript のコーディング規約を適用するスキル。以下の禁止事項を強制する:
   - `as` キャスト（型アサーション）— `as Record<string, unknown>` 等のユーティリティ用途も含む
