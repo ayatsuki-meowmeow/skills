@@ -1,0 +1,65 @@
+{
+  "skill_name": "neverthrow-setup",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "neverthrow を導入したい。プロジェクトでは fetch でのAPI呼び出しと Prisma でのDB操作があります。エラーとしてはバリデーションエラー、認証エラー、DBエラーを想定しています。セットアップしてください。",
+      "expected_output": "AppError 判別共用体（validation / unauthorized / db / unknown を含む）、AppResult<T> / AppResultAsync<T> 型エイリアス、fromFetch / fromDb ヘルパー、eslint-plugin-neverthrow の設定コードが生成される",
+      "files": [],
+      "assertions": [
+        {
+          "name": "AppError に validation / unauthorized / db / unknown が含まれる",
+          "description": "AppError 型に kind: 'validation', 'unauthorized', 'db', 'unknown' のすべてが含まれている"
+        },
+        {
+          "name": "AppResult<T> と AppResultAsync<T> 型エイリアスが定義されている",
+          "description": "両方の型エイリアスが正しく定義されている"
+        },
+        {
+          "name": "fromFetch ヘルパーが作成されている",
+          "description": "fetch 用の変換ヘルパー関数が含まれている"
+        },
+        {
+          "name": "fromDb ヘルパーが作成されている",
+          "description": "Prisma/DB 用の変換ヘルパー関数が含まれている"
+        },
+        {
+          "name": "eslint-plugin-neverthrow の設定が含まれている",
+          "description": "must-use-result ルールを含む ESLint 設定コードが示されている"
+        },
+        {
+          "name": "クラス継承ではなく判別共用体で AppError を定義している",
+          "description": "class AppError extends Error のようなクラス継承を使わず、type AppError = ... | ... の形式で定義している"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "neverthrow のセットアップをお願いします。エラー種別はバリデーションと not_found の2種類だけです。fetchは使いますがDBは使いません。",
+      "expected_output": "AppError に validation / not_found / unknown が含まれる。fromFetch ヘルパーが作成される。DBヘルパーは不要なので作られない。eslint 設定も含まれる。",
+      "files": [],
+      "assertions": [
+        {
+          "name": "AppError に validation / not_found / unknown が含まれる",
+          "description": "ユーザー指定の2種別に unknown を加えた3種別が含まれている"
+        },
+        {
+          "name": "fromFetch ヘルパーが作成されている",
+          "description": "fetch 用の変換ヘルパー関数が含まれている"
+        },
+        {
+          "name": "fromDb ヘルパーが作成されていない",
+          "description": "DB は不要と指定したので Prisma/DB 用ヘルパーが含まれていない"
+        },
+        {
+          "name": "eslint-plugin-neverthrow の設定が含まれている",
+          "description": "must-use-result ルールを含む ESLint 設定コードが示されている"
+        },
+        {
+          "name": "AppResult<T> と AppResultAsync<T> 型エイリアスが定義されている",
+          "description": "両方の型エイリアスが正しく定義されている"
+        }
+      ]
+    }
+  ]
+}
