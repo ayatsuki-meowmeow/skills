@@ -1,0 +1,23 @@
+{
+  "eval_id": 2,
+  "eval_name": "eval-2-code-review",
+  "prompt": "以下のTypeScriptコードをレビューしてください。\n\n```typescript\nasync function getUser(id: string): Promise<User> {\n  try {\n    const res = await fetch(`/api/users/${id}`);\n    if (!res.ok) throw new Error('fetch failed');\n    return await res.json();\n  } catch (e) {\n    console.error(e);\n    throw e;\n  }\n}\n```",
+  "assertions": [
+    {
+      "text": "try/catch の使用を問題として指摘している",
+      "description": "現状の try/catch パターンが neverthrow 規約に反すると明示的に指摘している"
+    },
+    {
+      "text": "ResultAsync/neverthrow への移行を提案している",
+      "description": "ResultAsync または neverthrow を使った代替実装を提案している"
+    },
+    {
+      "text": "AppError 判別共用体を使った改善例が示されている",
+      "description": "kind フィールドを持つ AppError 型での改善コードが含まれている"
+    },
+    {
+      "text": "Promise<User> から AppResultAsync への変更が示されている",
+      "description": "返り値型を Promise<User> から ResultAsync/AppResultAsync に変えることが提案されている"
+    }
+  ]
+}

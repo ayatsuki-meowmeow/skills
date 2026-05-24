@@ -1,0 +1,6 @@
+{
+  "eval_id": 3,
+  "eval_name": "eval-3-validation",
+  "prompt": "名前（string）とメール（string）を受け取るバリデーション関数を TypeScript で実装してください。名前は1文字以上、メールは@を含む必要があります。バリデーション失敗時はエラーメッセージを返したいです。",
+  "assertions": []
+}

@@ -1,0 +1,28 @@
+{
+  "eval_id": 1,
+  "eval_name": "eval-1-api-fetch",
+  "run": "with_skill",
+  "expectations": [
+    {
+      "text": "ResultAsync を返り値として使用している",
+      "passed": true,
+      "evidence": "ResultAsync.fromPromise を使用し、AppResultAsync<T> 型エイリアスで返り値を定義している"
+    },
+    {
+      "text": "try/catch を使っていない",
+      "passed": true,
+      "evidence": "コード全体に try/catch ブロックが存在しない。エラーは errMapper で処理"
+    },
+    {
+      "text": "AppError に not_found と unknown の kind が含まれている",
+      "passed": true,
+      "evidence": "{ kind: 'not_found'; resource: string } と { kind: 'unknown'; cause: unknown } が定義されている"
+    },
+    {
+      "text": "AppResult/AppResultAsync 型エイリアスを使っている",
+      "passed": true,
+      "evidence": "type AppResultAsync<T> = ResultAsync<T, AppError> を定義し、返り値型に使用"
+    }
+  ],
+  "pass_rate": 1.0
+}

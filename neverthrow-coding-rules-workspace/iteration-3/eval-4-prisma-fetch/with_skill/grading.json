@@ -1,0 +1,42 @@
+{
+  "expectations": [
+    {
+      "text": "try/catch を使っていない",
+      "passed": true,
+      "evidence": "コード全体に try { } catch { } ブロックが存在しない。fromDb ヘルパー（ResultAsync.fromPromise）と andThen で処理している"
+    },
+    {
+      "text": "ResultAsync.fromPromise で Prisma の Promise をラップしている",
+      "passed": true,
+      "evidence": "const fromDb = <T>(promise: Promise<T>): AppResultAsync<T> => ResultAsync.fromPromise(promise, ...) を定義し、fromDb(prisma.user.findUnique({ where: { id } })) で使用している"
+    },
+    {
+      "text": "not_found を err({ kind: 'not_found', ... }) で返している",
+      "passed": true,
+      "evidence": ".andThen((user) => { if (user === null) { return err<User, AppError>({ kind: 'not_found', resource: `user:${id}` }) } }) で null チェック後に err() を返している"
+    },
+    {
+      "text": "AppResult/AppResultAsync 型エイリアスを使っている",
+      "passed": true,
+      "evidence": "type AppResultAsync<T> = ResultAsync<T, AppError> を定義し、getUser の返り値型 AppResultAsync<User> として使用している"
+    }
+  ],
+  "summary": {
+    "passed": 4,
+    "failed": 0,
+    "total": 4,
+    "pass_rate": 1.0
+  },
+  "claims": [
+    {
+      "claim": "fromDb ヘルパーで DB 境界の変換を1箇所に集約している",
+      "type": "quality",
+      "verified": true,
+      "evidence": "fromDb ヘルパーを定義し errMapper は DB 例外（unknown error）のみ担当、not_found は andThen で処理する設計になっている"
+    }
+  ],
+  "eval_feedback": {
+    "suggestions": [],
+    "overall": "No suggestions, evals look solid"
+  }
+}

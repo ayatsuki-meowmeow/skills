@@ -1,0 +1,28 @@
+{
+  "eval_id": 3,
+  "eval_name": "eval-3-validation",
+  "run": "with_skill",
+  "expectations": [
+    {
+      "text": "Result を返り値として使用している",
+      "passed": true,
+      "evidence": "AppResult<T> = Result<T, AppError> エイリアスを定義し、各関数の返り値に使用"
+    },
+    {
+      "text": "成功時に ok() を使っている",
+      "passed": true,
+      "evidence": "return ok(name), return ok(email), return ok({ name, email }) が使われている"
+    },
+    {
+      "text": "失敗時に err({ kind: 'validation', ... }) を使っている",
+      "passed": true,
+      "evidence": "return err({ kind: 'validation', message: '...' }) パターンが使われている"
+    },
+    {
+      "text": "try/catch を使っていない",
+      "passed": true,
+      "evidence": "コード全体に try/catch ブロックが存在しない"
+    }
+  ],
+  "pass_rate": 1.0
+}

@@ -1,0 +1,6 @@
+{
+  "eval_id": 1,
+  "eval_name": "eval-1-api-fetch",
+  "prompt": "fetch で /api/users/:id からユーザー情報を取得する TypeScript の関数を実装してください。404の場合はnot_foundとして扱い、それ以外のエラーはunknownとします。",
+  "assertions": []
+}

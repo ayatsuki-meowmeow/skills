@@ -1,0 +1,42 @@
+{
+  "expectations": [
+    {
+      "text": "ResultAsync を返り値として使用している",
+      "passed": false,
+      "evidence": "async function fetchUser(id: string): Promise<FetchUserResult> — ResultAsync ではなく Promise を使用している"
+    },
+    {
+      "text": "try/catch を使っていない",
+      "passed": false,
+      "evidence": "try { const response = await fetch(...); ... } catch (error) { return { success: false, ... } } — try/catch ブロックが使用されている"
+    },
+    {
+      "text": "AppError に not_found と unknown の kind が含まれている",
+      "passed": false,
+      "evidence": "type FetchUserError = | { type: 'not_found' } | { type: 'unknown'; message: string } — kind フィールドではなく type フィールドを使用している"
+    },
+    {
+      "text": "AppResult/AppResultAsync 型エイリアスを使っている",
+      "passed": false,
+      "evidence": "独自の FetchUserResult ユニオン型 ({ success: true; data: User } | { success: false; error: FetchUserError }) を使用。neverthrow の AppResultAsync エイリアスは使われていない"
+    }
+  ],
+  "summary": {
+    "passed": 0,
+    "failed": 4,
+    "total": 4,
+    "pass_rate": 0.0
+  },
+  "claims": [
+    {
+      "claim": "エラーは FetchUserError のユニオン型で not_found と unknown の2種類を区別している",
+      "type": "quality",
+      "verified": true,
+      "evidence": "type Fィールドとなっているがユニオン型で2種類を区別していることは確認できる"
+    }
+  ],
+  "eval_feedback": {
+    "suggestions": [],
+    "overall": "No suggestions, evals look solid"
+  }
+}

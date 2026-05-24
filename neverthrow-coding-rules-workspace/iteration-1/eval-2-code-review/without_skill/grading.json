@@ -1,0 +1,28 @@
+{
+  "eval_id": 2,
+  "eval_name": "eval-2-code-review",
+  "run": "without_skill",
+  "expectations": [
+    {
+      "text": "try/catch の使用を問題として指摘している",
+      "passed": true,
+      "evidence": "「catch ブロックが無意味なラッパーになっている」として問題指摘している"
+    },
+    {
+      "text": "ResultAsync/neverthrow への移行を提案している",
+      "passed": false,
+      "evidence": "neverthrow への移行は「推奨パターン」として軽く触れる程度。主な改善案は try/catch の除去や zod 追加"
+    },
+    {
+      "text": "AppError 判別共用体を使った改善例が示されている",
+      "passed": false,
+      "evidence": "neverthrow 改善例では Result<User, Error> を使用し kind フィールドの判別共用体は示されていない"
+    },
+    {
+      "text": "Promise<User> から AppResultAsync への変更が示されている",
+      "passed": false,
+      "evidence": "Promise<Result<User, Error>> という形式で、AppResultAsync<User> エイリアスは使われていない"
+    }
+  ],
+  "pass_rate": 0.25
+}

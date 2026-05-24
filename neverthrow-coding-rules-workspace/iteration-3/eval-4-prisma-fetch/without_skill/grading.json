@@ -1,0 +1,42 @@
+{
+  "expectations": [
+    {
+      "text": "try/catch を使っていない",
+      "passed": false,
+      "evidence": "try { const user = await prisma.user.findUnique(...); ... } catch (err) { return { ok: false, error: { type: 'db', ... } } } — try/catch ブロックを使用している"
+    },
+    {
+      "text": "ResultAsync.fromPromise で Prisma の Promise をラップしている",
+      "passed": false,
+      "evidence": "neverthrow の ResultAsync.fromPromise を使っておらず、独自の Result<T, E> = { ok: true; value: T } | { ok: false; error: E } 型を定義して async/await + try/catch で実装している"
+    },
+    {
+      "text": "not_found を err({ kind: 'not_found', ... }) で返している",
+      "passed": false,
+      "evidence": "return { ok: false, error: { type: 'not_found', message: '...' } } を使用。neverthrow の err() を使わず、kind フィールドではなく type フィールドを使っている"
+    },
+    {
+      "text": "AppResult/AppResultAsync 型エイリアスを使っている",
+      "passed": false,
+      "evidence": "独自の type Result<T, E> = { ok: true; value: T } | { ok: false; error: E } を定義。neverthrow の AppResultAsync エイリアスは使われていない"
+    }
+  ],
+  "summary": {
+    "passed": 0,
+    "failed": 4,
+    "total": 4,
+    "pass_rate": 0.0
+  },
+  "claims": [
+    {
+      "claim": "try/catch で DB 例外を捕捉してエラー型に変換している",
+      "type": "quality",
+      "verified": true,
+      "evidence": "catch (err) { return { ok: false, error: { type: 'db', ... , cause: err } } } でDB例外を独自型に変換している"
+    }
+  ],
+  "eval_feedback": {
+    "suggestions": [],
+    "overall": "No suggestions. This eval is exactly what was needed — unlike eval-3-validation (which without_skill solved with a success-flag pattern and no try/catch), this Prisma scenario naturally elicits try/catch, making the skill's preventive effect clearly measurable."
+  }
+}

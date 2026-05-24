@@ -1,0 +1,42 @@
+{
+  "expectations": [
+    {
+      "text": "try/catch の使用を問題として指摘している",
+      "passed": true,
+      "evidence": "「3. catch ブロックが再スローするだけで意味が薄い」として try/catch の問題点を指摘している（ただし neverthrow 規約の観点ではなく、冗長性の観点から）"
+    },
+    {
+      "text": "ResultAsync/neverthrow への移行を提案している",
+      "passed": false,
+      "evidence": "neverthrow への言及が一切ない。zod によるバリデーション、カスタムエラークラス（class HttpError extends Error）への移行のみ提案"
+    },
+    {
+      "text": "AppError 判別共用体を使った改善例が示されている",
+      "passed": false,
+      "evidence": "kind フィールドを持つ AppError 判別共用体ではなく、class HttpError extends Error のクラス継承パターンを提案している"
+    },
+    {
+      "text": "Promise<User> から AppResultAsync への変更が示されている",
+      "passed": false,
+      "evidence": "AppResultAsync への変更は提案されていない。返り値は Promise<User> のままで async/await パターンを維持している"
+    }
+  ],
+  "summary": {
+    "passed": 1,
+    "failed": 3,
+    "total": 4,
+    "pass_rate": 0.25
+  },
+  "claims": [
+    {
+      "claim": "レスポンスの型安全性（zod によるパース）を最優先課題として指摘している",
+      "type": "quality",
+      "verified": true,
+      "evidence": "「1. レスポンスの型バリデーションがない（重要度: 高）」として zod を使った改善を提案"
+    }
+  ],
+  "eval_feedback": {
+    "suggestions": [],
+    "overall": "No suggestions, evals look solid"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "eval_id": 1,
+  "eval_name": "eval-1-api-fetch",
+  "run": "without_skill",
+  "expectations": [
+    {
+      "text": "ResultAsync を返り値として使用している",
+      "passed": false,
+      "evidence": "Promise<FetchUserResult> を返している。neverthrow を使わず独自ユニオン型で実装"
+    },
+    {
+      "text": "try/catch を使っていない",
+      "passed": false,
+      "evidence": "try/catch ブロックを使用してネットワークエラーをキャッチしている"
+    },
+    {
+      "text": "AppError に not_found と unknown の kind が含まれている",
+      "passed": false,
+      "evidence": "type フィールドで識別するが kind フィールドではなく、{ type: 'not_found' } の形式"
+    },
+    {
+      "text": "AppResult/AppResultAsync 型エイリアスを使っている",
+      "passed": false,
+      "evidence": "独自の FetchUserResult 型を使用。neverthrow の型エイリアスパターンなし"
+    }
+  ],
+  "pass_rate": 0.0
+}

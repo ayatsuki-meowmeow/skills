@@ -1,0 +1,23 @@
+{
+  "eval_id": 4,
+  "eval_name": "eval-4-prisma-fetch",
+  "prompt": "Prisma を使ってユーザーを取得する TypeScript の関数を実装してください。ユーザーが存在しない場合は not_found、DB エラーは db として扱いたいです。\n\n```typescript\n// 使用する Prisma クライアント\nconst prisma = new PrismaClient()\n```",
+  "assertions": [
+    {
+      "text": "try/catch を使っていない",
+      "description": "実装コードに try { } catch { } ブロックが存在しない"
+    },
+    {
+      "text": "ResultAsync.fromPromise で Prisma の Promise をラップしている",
+      "description": "prisma.user.findUnique 等を ResultAsync.fromPromise でラップしている"
+    },
+    {
+      "text": "not_found を err({ kind: 'not_found', ... }) で返している",
+      "description": "findUnique が null を返したとき、andThen 内で err({ kind: 'not_found', ... }) として Result に変換している"
+    },
+    {
+      "text": "AppResult/AppResultAsync 型エイリアスを使っている",
+      "description": "Result<T, AppError> と直接書かず AppResultAsync<T> 等のエイリアスを使用している"
+    }
+  ]
+}

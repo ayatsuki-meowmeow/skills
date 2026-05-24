@@ -1,0 +1,23 @@
+{
+  "eval_id": 1,
+  "eval_name": "eval-1-api-fetch",
+  "prompt": "fetch で /api/users/:id からユーザー情報を取得する TypeScript の関数を実装してください。404の場合はnot_foundとして扱い、それ以外のエラーはunknownとします。",
+  "assertions": [
+    {
+      "text": "ResultAsync を返り値として使用している",
+      "description": "関数の返り値に ResultAsync（または AppResultAsync）が使われている"
+    },
+    {
+      "text": "try/catch を使っていない",
+      "description": "実装コードに try { } catch { } ブロックが存在しない"
+    },
+    {
+      "text": "AppError に not_found と unknown の kind が含まれている",
+      "description": "エラーオブジェクトに kind: 'not_found' と kind: 'unknown' が使われている"
+    },
+    {
+      "text": "AppResult/AppResultAsync 型エイリアスを使っている",
+      "description": "Result<T, AppError> と直接書かず AppResultAsync<T> 等のエイリアスを使用している"
+    }
+  ]
+}

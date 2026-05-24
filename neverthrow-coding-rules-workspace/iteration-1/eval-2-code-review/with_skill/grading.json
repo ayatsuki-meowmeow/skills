@@ -1,0 +1,28 @@
+{
+  "eval_id": 2,
+  "eval_name": "eval-2-code-review",
+  "run": "with_skill",
+  "expectations": [
+    {
+      "text": "try/catch の使用を問題として指摘している",
+      "passed": true,
+      "evidence": "「try/catch で既知のエラーを処理している（規約違反）」として明示的に問題指摘している"
+    },
+    {
+      "text": "ResultAsync/neverthrow への移行を提案している",
+      "passed": true,
+      "evidence": "fromFetch ヘルパーと AppResultAsync<User> を使った改善案が具体的に示されている"
+    },
+    {
+      "text": "AppError 判別共用体を使った改善例が示されている",
+      "passed": true,
+      "evidence": "kind フィールドで識別する AppError 型と switch(err.kind) による exhaustive check の改善例あり"
+    },
+    {
+      "text": "Promise<User> から AppResultAsync への変更が示されている",
+      "passed": true,
+      "evidence": "改善後コードで function getUser(id: string): AppResultAsync<User> が示されている"
+    }
+  ],
+  "pass_rate": 1.0
+}

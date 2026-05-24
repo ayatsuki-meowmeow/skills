@@ -1,0 +1,42 @@
+{
+  "expectations": [
+    {
+      "text": "try/catch の使用を問題として指摘している",
+      "passed": true,
+      "evidence": "「違反2: try/catch で既知のエラーを握り潰し、再 throw している」として明示的に規約違反を指摘している"
+    },
+    {
+      "text": "ResultAsync/neverthrow への移行を提案している",
+      "passed": true,
+      "evidence": "修正後コードで ResultAsync.fromPromise と andThen を使った neverthrow 実装を提示している"
+    },
+    {
+      "text": "AppError 判別共用体を使った改善例が示されている",
+      "passed": true,
+      "evidence": "type AppError = | { kind: 'not_found'; resource: string } | { kind: 'unknown'; cause: unknown } と switch (err.kind) による exhaustive check の例が含まれている"
+    },
+    {
+      "text": "Promise<User> から AppResultAsync への変更が示されている",
+      "passed": true,
+      "evidence": "「違反1: 返り値が Promise<User> になっている（最重要）」で AppResultAsync<User> を使うべきと指摘し、修正後コードで function getUser(id: string): AppResultAsync<User> を示している"
+    }
+  ],
+  "summary": {
+    "passed": 4,
+    "failed": 0,
+    "total": 4,
+    "pass_rate": 1.0
+  },
+  "claims": [
+    {
+      "claim": "既知エラー（!res.ok）を throw で処理していることも違反として指摘している",
+      "type": "quality",
+      "verified": true,
+      "evidence": "「違反3: !res.ok を throw で処理している（known error を throw している）」として andThen + err() への変更を提案"
+    }
+  ],
+  "eval_feedback": {
+    "suggestions": [],
+    "overall": "No suggestions, evals look solid"
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "expectations": [
+    {
+      "text": "ResultAsync を返り値として使用している",
+      "passed": true,
+      "evidence": "const fetchUser = (id: string): AppResultAsync<User> => ResultAsync.fromPromise(...) — AppResultAsync<T> エイリアスを定義して使用している"
+    },
+    {
+      "text": "try/catch を使っていない",
+      "passed": true,
+      "evidence": "コード全体に try { } catch { } ブロックが存在しない。エラーは fromPromise の errMapper と andThen + err() で処理している"
+    },
+    {
+      "text": "AppError に not_found と unknown の kind が含まれている",
+      "passed": true,
+      "evidence": "type AppError = | { kind: 'not_found'; resource: string } | { kind: 'unknown'; cause: unknown } の両 kind が定義されている"
+    },
+    {
+      "text": "AppResult/AppResultAsync 型エイリアスを使っている",
+      "passed": true,
+      "evidence": "type AppResultAsync<T> = ResultAsync<T, AppError> を定義し、fetchUser の返り値型として使用している"
+    }
+  ],
+  "summary": {
+    "passed": 4,
+    "failed": 0,
+    "total": 4,
+    "pass_rate": 1.0
+  },
+  "claims": [
+    {
+      "claim": "fromPromise の errMapper は unknown error（ネットワーク断）のみを処理している",
+      "type": "quality",
+      "verified": true,
+      "evidence": "(e): AppError => ({ kind: 'unknown', cause: e }) — ネットワーク断・例外のみと明記されている"
+    },
+    {
+      "claim": "既知エラー（404）は andThen + err() で処理している",
+      "type": "quality",
+      "verified": true,
+      "evidence": ".andThen((res) => { if (res.status === 404) return err<User, AppError>({ kind: 'not_found', ... }) }) のパターンを使用"
+    }
+  ],
+  "eval_feedback": {
+    "suggestions": [],
+    "overall": "No suggestions, evals look solid"
+  }
+}

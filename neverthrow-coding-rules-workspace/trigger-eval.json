@@ -1,0 +1,82 @@
+[
+  {
+    "query": "fetch で /api/users/:id からユーザーを取得するTypeScript関数を実装して。404はnot_foundとして扱いたい",
+    "should_trigger": true
+  },
+  {
+    "query": "このTypeScriptコードをレビューして: async function getUser(id: string): Promise<User> { try { const res = await fetch(`/api/users/${id}`); if (!res.ok) throw new Error('failed'); return res.json(); } catch(e) { throw e; } }",
+    "should_trigger": true
+  },
+  {
+    "query": "名前とメールのバリデーション関数をTypeScriptで書いて。失敗したらエラーメッセージを返したい",
+    "should_trigger": true
+  },
+  {
+    "query": "Prismaでuserを取得する処理を実装してほしい。エラーはResult型で扱いたいです",
+    "should_trigger": true
+  },
+  {
+    "query": "neverthrowを使ってAPIコールのエラーハンドリングを実装したい。404と認証エラーを区別する必要がある",
+    "should_trigger": true
+  },
+  {
+    "query": "try/catchで書いてたこのコードをResult型に移行してほしい: const data = await prisma.user.findUnique({ where: { id } })",
+    "should_trigger": true
+  },
+  {
+    "query": "TypeScriptでエラーハンドリングを実装してほしい。入力値チェック付きのバリデーション関数です",
+    "should_trigger": true
+  },
+  {
+    "query": "外部APIを叩くサービス層の関数を書いて。エラーはneverthrowのResultAsyncで表現したい",
+    "should_trigger": true
+  },
+  {
+    "query": "このコードにネストしたtry/catchがあってレビューしてほしい: async function createOrder(userId: string, items: Item[]) { try { const user = await db.user.findUnique({ where: { id: userId } }); try { const order = await db.order.create({ data: { userId, items } }); return order; } catch(e) { throw new Error('order failed'); } } catch(e) { console.error(e); throw e; } }",
+    "should_trigger": true
+  },
+  {
+    "query": "ユーザー登録処理を実装したい。バリデーション→DB保存→メール送信の順で、それぞれのエラーを区別する",
+    "should_trigger": true
+  },
+  {
+    "query": "neverthrowをプロジェクトに導入したい。インストールとAppError型の設計から始めて",
+    "should_trigger": false
+  },
+  {
+    "query": "neverthrowのセットアップをしてほしい。eslintの設定も含めて",
+    "should_trigger": false
+  },
+  {
+    "query": "Reactコンポーネントで非同期データを表示したい。TanStack Queryを使う予定",
+    "should_trigger": false
+  },
+  {
+    "query": "useQueryのisLoadingとisErrorを使ったローディング状態を実装して",
+    "should_trigger": false
+  },
+  {
+    "query": "JavaScriptでfetchを使ったAPIコールを実装して。エラーはcatchで握りつぶしてOK",
+    "should_trigger": false
+  },
+  {
+    "query": "TypeScriptの型定義ファイル（.d.ts）を作って。UserとPostのインターフェースを定義したい",
+    "should_trigger": false
+  },
+  {
+    "query": "neverthrowとは何ですか？RxJSとどう違いますか？",
+    "should_trigger": false
+  },
+  {
+    "query": "ZodでAPIレスポンスのバリデーションスキーマを定義して",
+    "should_trigger": false
+  },
+  {
+    "query": "TypeScriptの型エラーが出てます: Property 'name' does not exist on type 'unknown'",
+    "should_trigger": false
+  },
+  {
+    "query": "ESLintのno-unused-varsルールを設定したい",
+    "should_trigger": false
+  }
+]

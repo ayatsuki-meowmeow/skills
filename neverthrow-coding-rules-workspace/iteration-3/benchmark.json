@@ -1,0 +1,77 @@
+{
+  "metadata": {
+    "skill_name": "neverthrow-coding-rules",
+    "skill_path": "/Users/konoreiji/skills/neverthrow-coding-rules",
+    "executor_model": "claude-sonnet-4-6",
+    "analyzer_model": "claude-sonnet-4-6",
+    "timestamp": "2026-05-24T13:55:00Z",
+    "evals_run": ["eval-4-prisma-fetch"],
+    "runs_per_configuration": 1
+  },
+  "runs": [
+    {
+      "eval_id": 4,
+      "eval_name": "eval-4-prisma-fetch",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "time_seconds": 29.0,
+        "tokens": 12774,
+        "errors": 0
+      },
+      "expectations": [
+        {"text": "try/catch を使っていない", "passed": true, "evidence": "コード全体に try/catch なし。fromDb ヘルパーと andThen で処理"},
+        {"text": "ResultAsync.fromPromise で Prisma の Promise をラップしている", "passed": true, "evidence": "fromDb ヘルパーで ResultAsync.fromPromise(prisma.user.findUnique(...)) をラップ"},
+        {"text": "not_found を err({ kind: 'not_found', ... }) で返している", "passed": true, "evidence": "andThen 内で user === null のとき err({ kind: 'not_found', resource: `user:${id}` }) を返す"},
+        {"text": "AppResult/AppResultAsync 型エイリアスを使っている", "passed": true, "evidence": "type AppResultAsync<T> = ResultAsync<T, AppError> を定義し返り値型に使用"}
+      ]
+    },
+    {
+      "eval_id": 4,
+      "eval_name": "eval-4-prisma-fetch",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.0,
+        "passed": 0,
+        "failed": 4,
+        "total": 4,
+        "time_seconds": 25.4,
+        "tokens": 10150,
+        "errors": 0
+      },
+      "expectations": [
+        {"text": "try/catch を使っていない", "passed": false, "evidence": "try { await prisma.user.findUnique(...) } catch (err) { ... } で try/catch を使用"},
+        {"text": "ResultAsync.fromPromise で Prisma の Promise をラップしている", "passed": false, "evidence": "neverthrow を使わず独自 Result 型 + async/await + try/catch で実装"},
+        {"text": "not_found を err({ kind: 'not_found', ... }) で返している", "passed": false, "evidence": "return { ok: false, error: { type: 'not_found', ... } } — neverthrow の err() でも kind フィールドでもない"},
+        {"text": "AppResult/AppResultAsync 型エイリアスを使っている", "passed": false, "evidence": "独自の type Result<T, E> = { ok: true; value: T } | { ok: false; error: E } を定義"}
+      ]
+    }
+  ],
+  "run_summary": {
+    "with_skill": {
+      "pass_rate": {"mean": 1.0, "stddev": 0.0, "min": 1.0, "max": 1.0},
+      "time_seconds": {"mean": 29.0, "stddev": 0.0, "min": 29.0, "max": 29.0},
+      "tokens": {"mean": 12774, "stddev": 0, "min": 12774, "max": 12774}
+    },
+    "without_skill": {
+      "pass_rate": {"mean": 0.0, "stddev": 0.0, "min": 0.0, "max": 0.0},
+      "time_seconds": {"mean": 25.4, "stddev": 0.0, "min": 25.4, "max": 25.4},
+      "tokens": {"mean": 10150, "stddev": 0, "min": 10150, "max": 10150}
+    },
+    "delta": {
+      "pass_rate": "+1.00",
+      "time_seconds": "+3.6",
+      "tokens": "+2624"
+    }
+  },
+  "notes": [
+    "eval-4-prisma-fetch: ユーザーの指摘通り、Prisma という「throw が自然に出やすいシナリオ」ではスキルなしが try/catch を使い 0/4 になった。eval-3-validation（success フラグパターンで try/catch を回避）と対照的に、スキルの『throw を防ぐ』効果を明確に測定できる eval として機能している。",
+    "without_skill は独自の Result<T,E>型（ok フラグパターン）+ try/catch で実装。neverthrow の ResultAsync.fromPromise も AppError 判別共用体（kind フィールド）も使われていない。",
+    "スキルの効果: delta +1.00 — eval-4 は全 eval の中で最も判別力が高い。"
+  ]
+}

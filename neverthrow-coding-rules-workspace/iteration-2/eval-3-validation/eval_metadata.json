@@ -1,0 +1,23 @@
+{
+  "eval_id": 3,
+  "eval_name": "eval-3-validation",
+  "prompt": "名前（string）とメール（string）を受け取るバリデーション関数を TypeScript で実装してください。名前は1文字以上、メールは@を含む必要があります。バリデーション失敗時はエラーメッセージを返したいです。",
+  "assertions": [
+    {
+      "text": "Result を返り値として使用している",
+      "description": "関数の返り値に Result（または AppResult）が使われている"
+    },
+    {
+      "text": "成功時に ok() を使っている",
+      "description": "バリデーション成功時に ok(value) で結果を返している"
+    },
+    {
+      "text": "失敗時に err({ kind: 'validation', ... }) を使っている",
+      "description": "バリデーション失敗時に err({ kind: 'validation', message: '...' }) パターンを使っている"
+    },
+    {
+      "text": "try/catch を使っていない",
+      "description": "実装コードに try { } catch { } ブロックが存在しない"
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "eval_id": 3,
+  "eval_name": "eval-3-validation",
+  "run": "without_skill",
+  "expectations": [
+    {
+      "text": "Result を返り値として使用している",
+      "passed": false,
+      "evidence": "独自の ValidationResult ユニオン型 ({ success: true } | { success: false; errors: [] }) を使用。neverthrow の Result 型ではない"
+    },
+    {
+      "text": "成功時に ok() を使っている",
+      "passed": false,
+      "evidence": "return { success: true } を使用。neverthrow の ok() は使っていない"
+    },
+    {
+      "text": "失敗時に err({ kind: 'validation', ... }) を使っている",
+      "passed": false,
+      "evidence": "return { success: false, errors: [...] } を使用。kind フィールドなし、neverthrow の err() も使っていない"
+    },
+    {
+      "text": "try/catch を使っていない",
+      "passed": true,
+      "evidence": "バリデーション関数に try/catch は使われていない"
+    }
+  ],
+  "pass_rate": 0.25
+}

@@ -1,0 +1,162 @@
+{
+  "metadata": {
+    "skill_name": "neverthrow-coding-rules",
+    "skill_path": "/Users/konoreiji/skills/neverthrow-coding-rules",
+    "executor_model": "claude-sonnet-4-6",
+    "analyzer_model": "claude-sonnet-4-6",
+    "timestamp": "2026-05-24T02:40:00Z",
+    "evals_run": ["eval-1-api-fetch", "eval-2-code-review", "eval-3-validation"],
+    "runs_per_configuration": 1
+  },
+  "runs": [
+    {
+      "eval_id": 1,
+      "eval_name": "eval-1-api-fetch",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "time_seconds": 29.8,
+        "tokens": 12065,
+        "errors": 0
+      },
+      "expectations": [
+        {"text": "ResultAsync を返り値として使用している", "passed": true, "evidence": "ResultAsync.fromPromise を使用し AppResultAsync<T> で定義"},
+        {"text": "try/catch を使っていない", "passed": true, "evidence": "コード全体に try/catch なし"},
+        {"text": "AppError に not_found と unknown の kind が含まれている", "passed": true, "evidence": "両 kind が定義されている"},
+        {"text": "AppResult/AppResultAsync 型エイリアスを使っている", "passed": true, "evidence": "AppResultAsync<T> エイリアスを定義して使用"}
+      ]
+    },
+    {
+      "eval_id": 1,
+      "eval_name": "eval-1-api-fetch",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.0,
+        "passed": 0,
+        "failed": 4,
+        "total": 4,
+        "time_seconds": 37.3,
+        "tokens": 10581,
+        "errors": 0
+      },
+      "expectations": [
+        {"text": "ResultAsync を返り値として使用している", "passed": false, "evidence": "Promise<FetchUserResult> を返す独自実装"},
+        {"text": "try/catch を使っていない", "passed": false, "evidence": "try/catch ブロックを使用"},
+        {"text": "AppError に not_found と unknown の kind が含まれている", "passed": false, "evidence": "type フィールドで識別、kind フィールドなし"},
+        {"text": "AppResult/AppResultAsync 型エイリアスを使っている", "passed": false, "evidence": "独自の FetchUserResult 型を使用"}
+      ]
+    },
+    {
+      "eval_id": 2,
+      "eval_name": "eval-2-code-review",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "time_seconds": 41.6,
+        "tokens": 12766,
+        "errors": 0
+      },
+      "expectations": [
+        {"text": "try/catch の使用を問題として指摘している", "passed": true, "evidence": "規約違反として明示的に指摘"},
+        {"text": "ResultAsync/neverthrow への移行を提案している", "passed": true, "evidence": "fromFetch ヘルパーと AppResultAsync<User> を提案"},
+        {"text": "AppError 判別共用体を使った改善例が示されている", "passed": true, "evidence": "kind フィールドと switch による exhaustive check の改善例あり"},
+        {"text": "Promise<User> から AppResultAsync への変更が示されている", "passed": true, "evidence": "改善後コードで AppResultAsync<User> が示されている"}
+      ]
+    },
+    {
+      "eval_id": 2,
+      "eval_name": "eval-2-code-review",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.25,
+        "passed": 1,
+        "failed": 3,
+        "total": 4,
+        "time_seconds": 31.5,
+        "tokens": 10497,
+        "errors": 0
+      },
+      "expectations": [
+        {"text": "try/catch の使用を問題として指摘している", "passed": true, "evidence": "catch ブロックが無意味なラッパーとして指摘"},
+        {"text": "ResultAsync/neverthrow への移行を提案している", "passed": false, "evidence": "neverthrow は推奨パターンとして軽く触れる程度"},
+        {"text": "AppError 判別共用体を使った改善例が示されている", "passed": false, "evidence": "Result<User, Error> を使用し kind フィールドなし"},
+        {"text": "Promise<User> から AppResultAsync への変更が示されている", "passed": false, "evidence": "Promise<Result<User, Error>> で AppResultAsync エイリアスなし"}
+      ]
+    },
+    {
+      "eval_id": 3,
+      "eval_name": "eval-3-validation",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "time_seconds": 43.7,
+        "tokens": 12367,
+        "errors": 0
+      },
+      "expectations": [
+        {"text": "Result を返り値として使用している", "passed": true, "evidence": "AppResult<T> エイリアスを定義して使用"},
+        {"text": "成功時に ok() を使っている", "passed": true, "evidence": "return ok(name/email) が使われている"},
+        {"text": "失敗時に err({ kind: 'validation', ... }) を使っている", "passed": true, "evidence": "return err({ kind: 'validation', message: '...' }) を使用"},
+        {"text": "try/catch を使っていない", "passed": true, "evidence": "コード全体に try/catch なし"}
+      ]
+    },
+    {
+      "eval_id": 3,
+      "eval_name": "eval-3-validation",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.25,
+        "passed": 1,
+        "failed": 3,
+        "total": 4,
+        "time_seconds": 20.8,
+        "tokens": 9601,
+        "errors": 0
+      },
+      "expectations": [
+        {"text": "Result を返り値として使用している", "passed": false, "evidence": "独自の ValidationResult ユニオン型を使用"},
+        {"text": "成功時に ok() を使っている", "passed": false, "evidence": "return { success: true } を使用"},
+        {"text": "失敗時に err({ kind: 'validation', ... }) を使っている", "passed": false, "evidence": "return { success: false, errors: [...] } を使用"},
+        {"text": "try/catch を使っていない", "passed": true, "evidence": "バリデーション関数に try/catch なし"}
+      ]
+    }
+  ],
+  "run_summary": {
+    "with_skill": {
+      "pass_rate": {"mean": 1.0, "stddev": 0.0, "min": 1.0, "max": 1.0},
+      "time_seconds": {"mean": 38.4, "stddev": 7.3, "min": 29.8, "max": 43.7},
+      "tokens": {"mean": 12399, "stddev": 357, "min": 12065, "max": 12766}
+    },
+    "without_skill": {
+      "pass_rate": {"mean": 0.167, "stddev": 0.144, "min": 0.0, "max": 0.25},
+      "time_seconds": {"mean": 29.9, "stddev": 8.4, "min": 20.8, "max": 37.3},
+      "tokens": {"mean": 10226, "stddev": 511, "min": 9601, "max": 10581}
+    },
+    "delta": {
+      "pass_rate": "+0.83",
+      "time_seconds": "+8.5",
+      "tokens": "+2173"
+    }
+  },
+  "notes": [
+    "eval-1-api-fetch: スキルなしでは neverthrow を使わず独自ユニオン型で実装してしまう。スキルがあると完全に規約通りの実装になる。",
+    "eval-2-code-review: スキルなしでも try/catch を問題指摘するが、AppError 判別共用体・AppResultAsync への移行は示されない。スキルがあると規約のすべての観点でレビューされる。",
+    "eval-3-validation: スキルなしでは neverthrow を使わず success フラグパターンで実装する。スキルがあると ok()/err() と kind フィールドを使う正しい実装になる。",
+    "スキルの効果が非常に大きく（+0.83）、特に実装タスク（eval-1, eval-3）でスキルなしは 0% のため、スキルは必須。"
+  ]
+}

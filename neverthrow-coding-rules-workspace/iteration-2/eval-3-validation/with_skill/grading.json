@@ -1,0 +1,42 @@
+{
+  "expectations": [
+    {
+      "text": "Result を返り値として使用している",
+      "passed": true,
+      "evidence": "type AppResult<T> = Result<T, AppError> を定義し、validateName / validateEmail / validateUserInput の返り値型として AppResult<string> / AppResult<UserInput> を使用している"
+    },
+    {
+      "text": "成功時に ok() を使っている",
+      "passed": true,
+      "evidence": "return ok(name) および return ok(email) が使われている"
+    },
+    {
+      "text": "失敗時に err({ kind: 'validation', ... }) を使っている",
+      "passed": true,
+      "evidence": "return err({ kind: 'validation', message: '名前は1文字以上で入力してください' }) および return err({ kind: 'validation', message: 'メールアドレスには @ を含めてください' }) を使用"
+    },
+    {
+      "text": "try/catch を使っていない",
+      "passed": true,
+      "evidence": "コード全体に try { } catch { } ブロックが存在しない"
+    }
+  ],
+  "summary": {
+    "passed": 4,
+    "failed": 0,
+    "total": 4,
+    "pass_rate": 1.0
+  },
+  "claims": [
+    {
+      "claim": "andThen + map によるチェーン処理で最初のエラーで短絡している",
+      "type": "quality",
+      "verified": true,
+      "evidence": "validateName(name).andThen((validName) => validateEmail(email).map(...)) パターンを使用"
+    }
+  ],
+  "eval_feedback": {
+    "suggestions": [],
+    "overall": "No suggestions, evals look solid"
+  }
+}

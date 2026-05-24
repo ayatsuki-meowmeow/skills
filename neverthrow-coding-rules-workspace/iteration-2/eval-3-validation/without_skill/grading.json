@@ -1,0 +1,42 @@
+{
+  "expectations": [
+    {
+      "text": "Result を返り値として使用している",
+      "passed": false,
+      "evidence": "neverthrow の Result 型ではなく、独自の ValidationResult = { success: true } | { success: false; errors: string[] } ユニオン型を定義して使用"
+    },
+    {
+      "text": "成功時に ok() を使っている",
+      "passed": false,
+      "evidence": "neverthrow の ok() を使わず return { success: true } を返している"
+    },
+    {
+      "text": "失敗時に err({ kind: 'validation', ... }) を使っている",
+      "passed": false,
+      "evidence": "neverthrow の err() を使わず return { success: false, errors } を返している。kind フィールドも存在しない"
+    },
+    {
+      "text": "try/catch を使っていない",
+      "passed": true,
+      "evidence": "コード全体に try { } catch { } ブロックが存在しない"
+    }
+  ],
+  "summary": {
+    "passed": 1,
+    "failed": 3,
+    "total": 4,
+    "pass_rate": 0.25
+  },
+  "claims": [
+    {
+      "claim": "errors 配列に蓄積する方式で複数エラーをまとめて返している",
+      "type": "quality",
+      "verified": true,
+      "evidence": "const errors: string[] = [] に push して全バリデーションを実行している"
+    }
+  ],
+  "eval_feedback": {
+    "suggestions": [],
+    "overall": "No suggestions, evals look solid"
+  }
+}

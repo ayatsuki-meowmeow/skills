@@ -1,0 +1,6 @@
+{
+  "eval_id": 2,
+  "eval_name": "eval-2-code-review",
+  "prompt": "以下のTypeScriptコードをレビューしてください。\n\n```typescript\nasync function getUser(id: string): Promise<User> {\n  try {\n    const res = await fetch(`/api/users/${id}`);\n    if (!res.ok) throw new Error('fetch failed');\n    return await res.json();\n  } catch (e) {\n    console.error(e);\n    throw e;\n  }\n}\n```",
+  "assertions": []
+}
