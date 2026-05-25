@@ -10,6 +10,49 @@
 |--------|------|
 | [`ts-type-safety`](./ts-type-safety/SKILL.md) | TypeScript のコーディング規約を強制する — `as` キャスト・`any`・`@ts-ignore` を禁止し、安全な代替手段を提供する |
 | [`neverthrow-setup`](./neverthrow-setup/SKILL.md) | TypeScript プロジェクトへの `neverthrow` 導入を一括サポート: パッケージインストール・`AppError` 判別共用体・`AppResult` 型エイリアス・`fromXxx` ヘルパー・ESLint 設定 |
+| [`neverthrow-coding-rules`](./neverthrow-coding-rules/SKILL.md) | `neverthrow` のコーディング規約を強制する — 生の `throw`・ロジックエラーへの `try/catch`・アンラップされた `Result` 値を禁止する |
+
+## スキルディレクトリの構成
+
+各スキルディレクトリには、そのスキルに関連するファイルをすべてまとめます。中身はスキルの性質によって異なります。
+
+### タイプ 1 — ルールのみ
+
+コーディング規約をプロンプトで定義するだけのスキル。自動実行による副作用がないため、動作確認用の workspace は不要です。
+
+```
+ts-type-safety/
+└── SKILL.md          # スキル定義
+```
+
+### タイプ 2 — セットアップ系
+
+パッケージインストールやファイル生成など、副作用が明確なスキル。セットアップを実行するだけで結果を確認できるため、workspace は不要です。配布用バイナリと eval 設定を含みます。
+
+```
+neverthrow-setup/
+├── SKILL.md                  # スキル定義
+├── evals/                    # eval 設定
+│   └── evals.json
+└── neverthrow-setup.skill    # 配布用バイナリ
+```
+
+### タイプ 3 — モデルの挙動変化を証明するコーディングルール系
+
+モデルのコード生成スタイルを変えるスキル。スキルが実際にモデルの挙動を変えることを示す before/after の証拠として、`workspace/` に eval のイテレーション結果を記録します。
+
+```
+neverthrow-coding-rules/
+├── SKILL.md                          # スキル定義
+├── evals/                            # eval 設定
+│   └── evals.json
+├── neverthrow-coding-rules.skill     # 配布用バイナリ
+└── workspace/                        # eval イテレーション結果
+    ├── trigger-eval.json
+    ├── iteration-1/
+    ├── iteration-2/
+    └── iteration-3/
+```
 
 ## スキルをプロジェクトにコピーする方法
 

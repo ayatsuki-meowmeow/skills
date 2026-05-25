@@ -10,6 +10,49 @@ A collection of Claude Code skills for development.
 |-------|-------------|
 | [`ts-type-safety`](./ts-type-safety/SKILL.md) | Enforces TypeScript coding conventions — bans `as` casts, `any`, and `@ts-ignore`, and provides safe alternatives |
 | [`neverthrow-setup`](./neverthrow-setup/SKILL.md) | Sets up `neverthrow` in a TypeScript project: package install, `AppError` union type, `AppResult` alias, `fromXxx` helpers, and ESLint config |
+| [`neverthrow-coding-rules`](./neverthrow-coding-rules/SKILL.md) | Enforces `neverthrow` coding conventions — bans raw `throw`, `try/catch` for logic errors, and unwrapped `Result` values |
+
+## Skill Directory Structure
+
+Each skill directory bundles everything related to that skill. The contents vary by skill type:
+
+### Type 1 — Rules only
+
+For skills that only define coding conventions via a prompt, with no automated side effects to verify.
+
+```
+ts-type-safety/
+└── SKILL.md          # skill definition
+```
+
+### Type 2 — Setup
+
+For skills that perform concrete, observable actions (install packages, write files, run commands). The distributable binary and evals are included; a separate workspace is not needed because the result is verifiable by running the setup itself.
+
+```
+neverthrow-setup/
+├── SKILL.md                  # skill definition
+├── evals/                    # eval configs
+│   └── evals.json
+└── neverthrow-setup.skill    # distributable binary
+```
+
+### Type 3 — Coding rules with behavioral proof
+
+For skills that change how the model writes code. A `workspace/` directory is included to record eval iterations as evidence that the skill actually shifts model behavior (before/after comparison).
+
+```
+neverthrow-coding-rules/
+├── SKILL.md                          # skill definition
+├── evals/                            # eval configs
+│   └── evals.json
+├── neverthrow-coding-rules.skill     # distributable binary
+└── workspace/                        # eval iteration results
+    ├── trigger-eval.json
+    ├── iteration-1/
+    ├── iteration-2/
+    └── iteration-3/
+```
 
 ## Copying Skills to a Project
 
