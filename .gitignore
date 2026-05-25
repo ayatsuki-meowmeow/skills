@@ -1,4 +1,4 @@
 # eval 実行時に subagent が生成するテンポラリリポジトリは追跡しない。
 # 再現は fixtures/<name>/setup.sh から可能。
-commit-workflow-workspace/iteration-*/*/with_skill/repo/
-commit-workflow-workspace/iteration-*/*/without_skill/repo/
+commit-workflow/workspace/iteration-*/*/with_skill/repo/
+commit-workflow/workspace/iteration-*/*/without_skill/repo/
