@@ -1,0 +1,39 @@
+{
+  "skill_name": "commit-workflow",
+  "evals": [
+    {
+      "id": 1,
+      "name": "single-utility-with-test",
+      "prompt": "変更をコミットしてください。",
+      "fixture": "fixtures/single-utility/setup.sh",
+      "expected_output": "1〜2コミットに分割される。各コミットメッセージの1行目は英語、空行を挟んで日本語詳細。Co-Authored-By フッターは付かない。",
+      "assertions": [
+        {"name": "has_new_commit", "description": "新規コミットが少なくとも1つ作成されている"},
+        {"name": "working_tree_clean", "description": "すべての変更がコミットされている（git status が clean）"},
+        {"name": "subject_is_ascii", "description": "全コミットの1行目（subject）が ASCII のみ（=英語）"},
+        {"name": "has_blank_line_after_subject", "description": "全コミットメッセージで1行目の次の行が空行になっている"},
+        {"name": "body_has_japanese", "description": "全コミットメッセージの本文（2行目以降）に日本語文字が含まれる"},
+        {"name": "no_co_authored_by", "description": "全コミットメッセージに `Co-Authored-By` フッターが含まれない"},
+        {"name": "author_is_user", "description": "全コミットの Author / Committer が Reiji Kono <reiji.kono@aprender.jp>"}
+      ]
+    },
+    {
+      "id": 2,
+      "name": "multiple-semantic-units",
+      "prompt": "変更をコミットしてください。",
+      "fixture": "fixtures/multiple-units/setup.sh",
+      "expected_output": "3つ前後のコミットに意味単位（ビジネスロジック / UI / ユーティリティ）で分割される。各コミットが英語サマリ+空行+日本語の構造を持ち、Co-Authored-By フッターは付かない。",
+      "assertions": [
+        {"name": "has_new_commit", "description": "新規コミットが少なくとも1つ作成されている"},
+        {"name": "multiple_commits", "description": "2つ以上の新規コミットが作成されている（意味単位での分割の証拠）"},
+        {"name": "working_tree_clean", "description": "すべての変更がコミットされている（git status が clean）"},
+        {"name": "subject_is_ascii", "description": "全コミットの1行目（subject）が ASCII のみ（=英語）"},
+        {"name": "has_blank_line_after_subject", "description": "全コミットメッセージで1行目の次の行が空行になっている"},
+        {"name": "body_has_japanese", "description": "全コミットメッセージの本文（2行目以降）に日本語文字が含まれる"},
+        {"name": "no_co_authored_by", "description": "全コミットメッセージに `Co-Authored-By` フッターが含まれない"},
+        {"name": "author_is_user", "description": "全コミットの Author / Committer が Reiji Kono <reiji.kono@aprender.jp>"},
+        {"name": "semantic_units_separated", "description": "各コミットが1つの意味単位（services/types or components or utils）だけを含む"}
+      ]
+    }
+  ]
+}

@@ -1,0 +1,82 @@
+[
+  {
+    "query": "src/services/user-service.ts と src/components/UserCard.tsx を実装し終わった。コミットしてください。",
+    "should_trigger": true
+  },
+  {
+    "query": "ユーザー認証の機能実装が一段落したので、ここまでの変更を git に記録しておきたい。",
+    "should_trigger": true
+  },
+  {
+    "query": "PR出す前に変更を切っておいてください。format-date のユーティリティとそのテストです。",
+    "should_trigger": true
+  },
+  {
+    "query": "実装終わったからコミットお願いします",
+    "should_trigger": true
+  },
+  {
+    "query": "テストファイルを3つ追加した。一旦ここで commit 作ってもらえる？",
+    "should_trigger": true
+  },
+  {
+    "query": "今 git status 見たら 7ファイル変更されてた。いい感じに分けてコミットして",
+    "should_trigger": true
+  },
+  {
+    "query": "あと push するだけなんだけど、その前にちゃんとコミット切っといて欲しい",
+    "should_trigger": true
+  },
+  {
+    "query": "ビジネスロジックと UI 両方触ったから、コミットは分けて作ってください",
+    "should_trigger": true
+  },
+  {
+    "query": "そろそろ commit しときたい",
+    "should_trigger": true
+  },
+  {
+    "query": "feat ブランチで作業した分、まとめて記録お願い",
+    "should_trigger": true
+  },
+  {
+    "query": "src/utils/email-validator.ts にバグがあるので直してください。`+` を含むメールが reject されてしまいます。",
+    "should_trigger": false
+  },
+  {
+    "query": "ここ最近の main ブランチのコミット履歴を見せてください。",
+    "should_trigger": false
+  },
+  {
+    "query": "直近 3 つのコミットを 1 つに rebase でまとめたい。手順を教えて。",
+    "should_trigger": false
+  },
+  {
+    "query": "1個前のコミットを revert してください。あの修正が原因で本番が落ちてる。",
+    "should_trigger": false
+  },
+  {
+    "query": "今 staging されている変更の diff を見たい。git diff --staged で出して。",
+    "should_trigger": false
+  },
+  {
+    "query": "このPRをレビューしてもらえますか。https://github.com/example/repo/pull/123 です。",
+    "should_trigger": false
+  },
+  {
+    "query": "feature/login ブランチを main にマージしてください。コンフリクトはなさそうです。",
+    "should_trigger": false
+  },
+  {
+    "query": "リモートの origin/main を pull して、ローカル main を最新化してください。",
+    "should_trigger": false
+  },
+  {
+    "query": "新しいブランチ feature/payment を切って、そこに移動してください。",
+    "should_trigger": false
+  },
+  {
+    "query": "UserService のクラス設計について相談したい。findById と register の責務分離どう思う？",
+    "should_trigger": false
+  }
+]
