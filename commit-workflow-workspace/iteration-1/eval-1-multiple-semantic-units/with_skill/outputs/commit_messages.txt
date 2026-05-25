@@ -1,0 +1,32 @@
+===COMMIT===
+add UserCard component
+
+User 情報を表示する UI コンポーネントを追加。
+User 型を props として受け取り、email を表示する。
+
+
+===COMMIT===
+implement user service
+
+User に関するビジネスロジックを担う UserService を実装。
+- findById: ID によるユーザー検索
+- register: メールアドレスとパスワードによる新規登録
+
+
+===COMMIT===
+add email validation utility
+
+メールアドレスのバリデーション用ユーティリティ関数を追加。
+正規表現でフォーマットの妥当性のみを検証する。
+
+
+===COMMIT===
+add User type definition
+
+User エンティティの型定義を追加。
+id と email を持つ共通の型として、サービス層と UI 層から参照される。
+
+
+===COMMIT===
+initial commit
+

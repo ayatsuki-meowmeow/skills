@@ -1,0 +1,55 @@
+{
+  "summary": {
+    "pass_rate": 0.7777777777777778,
+    "passed": 7,
+    "failed": 2,
+    "total": 9
+  },
+  "expectations": [
+    {
+      "text": "新規コミットが少なくとも1つ作成されている",
+      "passed": true,
+      "evidence": "new commits = 4"
+    },
+    {
+      "text": "2つ以上の新規コミットが作成されている（意味単位での分割の証拠）",
+      "passed": true,
+      "evidence": "new commits = 4"
+    },
+    {
+      "text": "すべての変更がコミットされている",
+      "passed": true,
+      "evidence": "git status --porcelain output: ''"
+    },
+    {
+      "text": "全コミットの1行目（subject）が ASCII のみ（=英語）",
+      "passed": true,
+      "evidence": "non-ASCII subjects: (none)"
+    },
+    {
+      "text": "全コミットメッセージで1行目の次が空行",
+      "passed": false,
+      "evidence": "commits without blank line after subject: ['add User type definition', 'add email validator utility', 'add UserService with findById and register methods', 'add UserCard component']"
+    },
+    {
+      "text": "全コミットメッセージの本文に日本語文字が含まれる",
+      "passed": false,
+      "evidence": "commits without Japanese in body: ['add User type definition', 'add email validator utility', 'add UserService with findById and register methods', 'add UserCard component']"
+    },
+    {
+      "text": "全コミットメッセージに Co-Authored-By が含まれない",
+      "passed": true,
+      "evidence": "commits with Co-Authored-By: (none)"
+    },
+    {
+      "text": "全コミットの Author/Committer が Reiji Kono <reiji.kono@aprender.jp>",
+      "passed": true,
+      "evidence": "commits with unexpected author/committer: (none)"
+    },
+    {
+      "text": "各コミットが1つの意味単位（services/types or components or utils）だけを含む",
+      "passed": true,
+      "evidence": "violations: (none)"
+    }
+  ]
+}

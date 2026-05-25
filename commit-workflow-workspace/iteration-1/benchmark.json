@@ -1,0 +1,296 @@
+{
+  "metadata": {
+    "skill_name": "commit-workflow",
+    "skill_path": "/Users/konoreiji/skills/commit-workflow",
+    "executor_model": "<model-name>",
+    "analyzer_model": "<model-name>",
+    "timestamp": "2026-05-25T05:57:53Z",
+    "evals_run": [
+      0,
+      1
+    ],
+    "runs_per_configuration": 3
+  },
+  "runs": [
+    {
+      "eval_id": 0,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 7,
+        "failed": 0,
+        "total": 7,
+        "time_seconds": 68.5,
+        "tokens": 53464,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "\u65b0\u898f\u30b3\u30df\u30c3\u30c8\u304c\u5c11\u306a\u304f\u3068\u30821\u3064\u4f5c\u6210\u3055\u308c\u3066\u3044\u308b",
+          "passed": true,
+          "evidence": "new commits = 2"
+        },
+        {
+          "text": "\u3059\u3079\u3066\u306e\u5909\u66f4\u304c\u30b3\u30df\u30c3\u30c8\u3055\u308c\u3066\u3044\u308b",
+          "passed": true,
+          "evidence": "git status --porcelain output: ''"
+        },
+        {
+          "text": "\u5168\u30b3\u30df\u30c3\u30c8\u306e1\u884c\u76ee\uff08subject\uff09\u304c ASCII \u306e\u307f\uff08=\u82f1\u8a9e\uff09",
+          "passed": true,
+          "evidence": "non-ASCII subjects: (none)"
+        },
+        {
+          "text": "\u5168\u30b3\u30df\u30c3\u30c8\u30e1\u30c3\u30bb\u30fc\u30b8\u30671\u884c\u76ee\u306e\u6b21\u304c\u7a7a\u884c",
+          "passed": true,
+          "evidence": "commits without blank line after subject: (none)"
+        },
+        {
+          "text": "\u5168\u30b3\u30df\u30c3\u30c8\u30e1\u30c3\u30bb\u30fc\u30b8\u306e\u672c\u6587\u306b\u65e5\u672c\u8a9e\u6587\u5b57\u304c\u542b\u307e\u308c\u308b",
+          "passed": true,
+          "evidence": "commits without Japanese in body: (none)"
+        },
+        {
+          "text": "\u5168\u30b3\u30df\u30c3\u30c8\u30e1\u30c3\u30bb\u30fc\u30b8\u306b Co-Authored-By \u304c\u542b\u307e\u308c\u306a\u3044",
+          "passed": true,
+          "evidence": "commits with Co-Authored-By: (none)"
+        },
+        {
+          "text": "\u5168\u30b3\u30df\u30c3\u30c8\u306e Author/Committer \u304c Reiji Kono <reiji.kono@aprender.jp>",
+          "passed": true,
+          "evidence": "commits with unexpected author/committer: (none)"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 1,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 9,
+        "failed": 0,
+        "total": 9,
+        "time_seconds": 39.7,
+        "tokens": 54681,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "\u65b0\u898f\u30b3\u30df\u30c3\u30c8\u304c\u5c11\u306a\u304f\u3068\u30821\u3064\u4f5c\u6210\u3055\u308c\u3066\u3044\u308b",
+          "passed": true,
+          "evidence": "new commits = 4"
+        },
+        {
+          "text": "2\u3064\u4ee5\u4e0a\u306e\u65b0\u898f\u30b3\u30df\u30c3\u30c8\u304c\u4f5c\u6210\u3055\u308c\u3066\u3044\u308b\uff08\u610f\u5473\u5358\u4f4d\u3067\u306e\u5206\u5272\u306e\u8a3c\u62e0\uff09",
+          "passed": true,
+          "evidence": "new commits = 4"
+        },
+        {
+          "text": "\u3059\u3079\u3066\u306e\u5909\u66f4\u304c\u30b3\u30df\u30c3\u30c8\u3055\u308c\u3066\u3044\u308b",
+          "passed": true,
+          "evidence": "git status --porcelain output: ''"
+        },
+        {
+          "text": "\u5168\u30b3\u30df\u30c3\u30c8\u306e1\u884c\u76ee\uff08subject\uff09\u304c ASCII \u306e\u307f\uff08=\u82f1\u8a9e\uff09",
+          "passed": true,
+          "evidence": "non-ASCII subjects: (none)"
+        },
+        {
+          "text": "\u5168\u30b3\u30df\u30c3\u30c8\u30e1\u30c3\u30bb\u30fc\u30b8\u30671\u884c\u76ee\u306e\u6b21\u304c\u7a7a\u884c",
+          "passed": true,
+          "evidence": "commits without blank line after subject: (none)"
+        },
+        {
+          "text": "\u5168\u30b3\u30df\u30c3\u30c8\u30e1\u30c3\u30bb\u30fc\u30b8\u306e\u672c\u6587\u306b\u65e5\u672c\u8a9e\u6587\u5b57\u304c\u542b\u307e\u308c\u308b",
+          "passed": true,
+          "evidence": "commits without Japanese in body: (none)"
+        },
+        {
+          "text": "\u5168\u30b3\u30df\u30c3\u30c8\u30e1\u30c3\u30bb\u30fc\u30b8\u306b Co-Authored-By \u304c\u542b\u307e\u308c\u306a\u3044",
+          "passed": true,
+          "evidence": "commits with Co-Authored-By: (none)"
+        },
+        {
+          "text": "\u5168\u30b3\u30df\u30c3\u30c8\u306e Author/Committer \u304c Reiji Kono <reiji.kono@aprender.jp>",
+          "passed": true,
+          "evidence": "commits with unexpected author/committer: (none)"
+        },
+        {
+          "text": "\u5404\u30b3\u30df\u30c3\u30c8\u304c1\u3064\u306e\u610f\u5473\u5358\u4f4d\uff08services/types or components or utils\uff09\u3060\u3051\u3092\u542b\u3080",
+          "passed": true,
+          "evidence": "violations: (none)"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 0,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.7142857142857143,
+        "passed": 5,
+        "failed": 2,
+        "total": 7,
+        "time_seconds": 53.7,
+        "tokens": 49031,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "\u65b0\u898f\u30b3\u30df\u30c3\u30c8\u304c\u5c11\u306a\u304f\u3068\u30821\u3064\u4f5c\u6210\u3055\u308c\u3066\u3044\u308b",
+          "passed": true,
+          "evidence": "new commits = 1"
+        },
+        {
+          "text": "\u3059\u3079\u3066\u306e\u5909\u66f4\u304c\u30b3\u30df\u30c3\u30c8\u3055\u308c\u3066\u3044\u308b",
+          "passed": true,
+          "evidence": "git status --porcelain output: ''"
+        },
+        {
+          "text": "\u5168\u30b3\u30df\u30c3\u30c8\u306e1\u884c\u76ee\uff08subject\uff09\u304c ASCII \u306e\u307f\uff08=\u82f1\u8a9e\uff09",
+          "passed": true,
+          "evidence": "non-ASCII subjects: (none)"
+        },
+        {
+          "text": "\u5168\u30b3\u30df\u30c3\u30c8\u30e1\u30c3\u30bb\u30fc\u30b8\u30671\u884c\u76ee\u306e\u6b21\u304c\u7a7a\u884c",
+          "passed": true,
+          "evidence": "commits without blank line after subject: (none)"
+        },
+        {
+          "text": "\u5168\u30b3\u30df\u30c3\u30c8\u30e1\u30c3\u30bb\u30fc\u30b8\u306e\u672c\u6587\u306b\u65e5\u672c\u8a9e\u6587\u5b57\u304c\u542b\u307e\u308c\u308b",
+          "passed": false,
+          "evidence": "commits without Japanese in body: ['add formatDateISO and formatDateLocal utilities with tests']"
+        },
+        {
+          "text": "\u5168\u30b3\u30df\u30c3\u30c8\u30e1\u30c3\u30bb\u30fc\u30b8\u306b Co-Authored-By \u304c\u542b\u307e\u308c\u306a\u3044",
+          "passed": false,
+          "evidence": "commits with Co-Authored-By: ['add formatDateISO and formatDateLocal utilities with tests']"
+        },
+        {
+          "text": "\u5168\u30b3\u30df\u30c3\u30c8\u306e Author/Committer \u304c Reiji Kono <reiji.kono@aprender.jp>",
+          "passed": true,
+          "evidence": "commits with unexpected author/committer: (none)"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 1,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.7777777777777778,
+        "passed": 7,
+        "failed": 2,
+        "total": 9,
+        "time_seconds": 72.4,
+        "tokens": 723,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "\u65b0\u898f\u30b3\u30df\u30c3\u30c8\u304c\u5c11\u306a\u304f\u3068\u30821\u3064\u4f5c\u6210\u3055\u308c\u3066\u3044\u308b",
+          "passed": true,
+          "evidence": "new commits = 4"
+        },
+        {
+          "text": "2\u3064\u4ee5\u4e0a\u306e\u65b0\u898f\u30b3\u30df\u30c3\u30c8\u304c\u4f5c\u6210\u3055\u308c\u3066\u3044\u308b\uff08\u610f\u5473\u5358\u4f4d\u3067\u306e\u5206\u5272\u306e\u8a3c\u62e0\uff09",
+          "passed": true,
+          "evidence": "new commits = 4"
+        },
+        {
+          "text": "\u3059\u3079\u3066\u306e\u5909\u66f4\u304c\u30b3\u30df\u30c3\u30c8\u3055\u308c\u3066\u3044\u308b",
+          "passed": true,
+          "evidence": "git status --porcelain output: ''"
+        },
+        {
+          "text": "\u5168\u30b3\u30df\u30c3\u30c8\u306e1\u884c\u76ee\uff08subject\uff09\u304c ASCII \u306e\u307f\uff08=\u82f1\u8a9e\uff09",
+          "passed": true,
+          "evidence": "non-ASCII subjects: (none)"
+        },
+        {
+          "text": "\u5168\u30b3\u30df\u30c3\u30c8\u30e1\u30c3\u30bb\u30fc\u30b8\u30671\u884c\u76ee\u306e\u6b21\u304c\u7a7a\u884c",
+          "passed": false,
+          "evidence": "commits without blank line after subject: ['add User type definition', 'add email validator utility', 'add UserService with findById and register methods', 'add UserCard component']"
+        },
+        {
+          "text": "\u5168\u30b3\u30df\u30c3\u30c8\u30e1\u30c3\u30bb\u30fc\u30b8\u306e\u672c\u6587\u306b\u65e5\u672c\u8a9e\u6587\u5b57\u304c\u542b\u307e\u308c\u308b",
+          "passed": false,
+          "evidence": "commits without Japanese in body: ['add User type definition', 'add email validator utility', 'add UserService with findById and register methods', 'add UserCard component']"
+        },
+        {
+          "text": "\u5168\u30b3\u30df\u30c3\u30c8\u30e1\u30c3\u30bb\u30fc\u30b8\u306b Co-Authored-By \u304c\u542b\u307e\u308c\u306a\u3044",
+          "passed": true,
+          "evidence": "commits with Co-Authored-By: (none)"
+        },
+        {
+          "text": "\u5168\u30b3\u30df\u30c3\u30c8\u306e Author/Committer \u304c Reiji Kono <reiji.kono@aprender.jp>",
+          "passed": true,
+          "evidence": "commits with unexpected author/committer: (none)"
+        },
+        {
+          "text": "\u5404\u30b3\u30df\u30c3\u30c8\u304c1\u3064\u306e\u610f\u5473\u5358\u4f4d\uff08services/types or components or utils\uff09\u3060\u3051\u3092\u542b\u3080",
+          "passed": true,
+          "evidence": "violations: (none)"
+        }
+      ],
+      "notes": []
+    }
+  ],
+  "run_summary": {
+    "with_skill": {
+      "pass_rate": {
+        "mean": 1.0,
+        "stddev": 0.0,
+        "min": 1.0,
+        "max": 1.0
+      },
+      "time_seconds": {
+        "mean": 54.1,
+        "stddev": 20.3647,
+        "min": 39.7,
+        "max": 68.5
+      },
+      "tokens": {
+        "mean": 54072.5,
+        "stddev": 860.549,
+        "min": 53464,
+        "max": 54681
+      }
+    },
+    "without_skill": {
+      "pass_rate": {
+        "mean": 0.746,
+        "stddev": 0.0449,
+        "min": 0.7143,
+        "max": 0.7778
+      },
+      "time_seconds": {
+        "mean": 63.05,
+        "stddev": 13.2229,
+        "min": 53.7,
+        "max": 72.4
+      },
+      "tokens": {
+        "mean": 24877.0,
+        "stddev": 34158.9144,
+        "min": 723,
+        "max": 49031
+      }
+    },
+    "delta": {
+      "pass_rate": "+0.25",
+      "time_seconds": "-8.9",
+      "tokens": "+29196"
+    }
+  },
+  "notes": []
+}

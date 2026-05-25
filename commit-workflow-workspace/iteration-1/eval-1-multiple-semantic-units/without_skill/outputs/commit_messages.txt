@@ -1,0 +1,19 @@
+===COMMIT===
+add UserCard component
+
+
+===COMMIT===
+add UserService with findById and register methods
+
+
+===COMMIT===
+add email validator utility
+
+
+===COMMIT===
+add User type definition
+
+
+===COMMIT===
+initial commit
+

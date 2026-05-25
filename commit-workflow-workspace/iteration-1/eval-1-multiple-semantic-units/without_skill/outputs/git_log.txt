@@ -1,0 +1,39 @@
+commit 84f98dfc71142e455ce2ff93375dfb922c20c7c4 (HEAD -> main)
+Author:     Reiji Kono <reiji.kono@aprender.jp>
+AuthorDate: Mon May 25 14:52:40 2026 +0900
+Commit:     Reiji Kono <reiji.kono@aprender.jp>
+CommitDate: Mon May 25 14:52:40 2026 +0900
+
+    add UserCard component
+
+commit 05a49d1eaf40d592d6b4c9478e8cc835330cf8a2
+Author:     Reiji Kono <reiji.kono@aprender.jp>
+AuthorDate: Mon May 25 14:52:34 2026 +0900
+Commit:     Reiji Kono <reiji.kono@aprender.jp>
+CommitDate: Mon May 25 14:52:34 2026 +0900
+
+    add UserService with findById and register methods
+
+commit bc3e965ae7e2178d5e3b359d60f883f205bc244d
+Author:     Reiji Kono <reiji.kono@aprender.jp>
+AuthorDate: Mon May 25 14:52:28 2026 +0900
+Commit:     Reiji Kono <reiji.kono@aprender.jp>
+CommitDate: Mon May 25 14:52:28 2026 +0900
+
+    add email validator utility
+
+commit d4ed8037b097765ff32c4d3a9c054467e89c1d20
+Author:     Reiji Kono <reiji.kono@aprender.jp>
+AuthorDate: Mon May 25 14:52:22 2026 +0900
+Commit:     Reiji Kono <reiji.kono@aprender.jp>
+CommitDate: Mon May 25 14:52:22 2026 +0900
+
+    add User type definition
+
+commit 562e4431fdc805910ca0e04ffca33211eebed222
+Author:     Reiji Kono <reiji.kono@aprender.jp>
+AuthorDate: Mon May 25 14:51:52 2026 +0900
+Commit:     Reiji Kono <reiji.kono@aprender.jp>
+CommitDate: Mon May 25 14:51:52 2026 +0900
+
+    initial commit

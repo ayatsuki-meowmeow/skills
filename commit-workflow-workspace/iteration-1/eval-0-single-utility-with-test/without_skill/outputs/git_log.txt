@@ -1,0 +1,17 @@
+commit 6af0b66ef5edbc81569ce173e1a1ef29e23e234e (HEAD -> main)
+Author:     Reiji Kono <reiji.kono@aprender.jp>
+AuthorDate: Mon May 25 14:52:10 2026 +0900
+Commit:     Reiji Kono <reiji.kono@aprender.jp>
+CommitDate: Mon May 25 14:52:10 2026 +0900
+
+    add formatDateISO and formatDateLocal utilities with tests
+    
+    Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>
+
+commit be8975a3a13982323242fc3df9adaf9fee9c14d1
+Author:     Reiji Kono <reiji.kono@aprender.jp>
+AuthorDate: Mon May 25 14:51:37 2026 +0900
+Commit:     Reiji Kono <reiji.kono@aprender.jp>
+CommitDate: Mon May 25 14:51:37 2026 +0900
+
+    initial commit

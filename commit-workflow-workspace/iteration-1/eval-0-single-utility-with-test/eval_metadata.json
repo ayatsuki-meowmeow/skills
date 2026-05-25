@@ -1,0 +1,14 @@
+{
+  "eval_id": 0,
+  "eval_name": "single-utility-with-test",
+  "prompt": "変更をコミットしてください。",
+  "assertions": [
+    {"name": "has_new_commit", "description": "新規コミットが少なくとも1つ作成されている"},
+    {"name": "working_tree_clean", "description": "すべての変更がコミットされている"},
+    {"name": "subject_is_ascii", "description": "全コミットの1行目（subject）が ASCII のみ（=英語）"},
+    {"name": "has_blank_line_after_subject", "description": "全コミットメッセージで1行目の次が空行"},
+    {"name": "body_has_japanese", "description": "全コミットメッセージの本文に日本語文字が含まれる"},
+    {"name": "no_co_authored_by", "description": "全コミットメッセージに Co-Authored-By が含まれない"},
+    {"name": "author_is_user", "description": "全コミットの Author/Committer が Reiji Kono <reiji.kono@aprender.jp>"}
+  ]
+}

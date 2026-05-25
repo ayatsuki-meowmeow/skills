@@ -1,0 +1,19 @@
+===COMMIT===
+add tests for date formatting utility
+
+format-date ユーティリティに対するユニットテストを追加。
+- formatDateISO: yyyy-mm-dd 形式で返ることを検証
+- formatDateLocal: ja-JP ロケールの文字列を返すことを検証
+
+
+===COMMIT===
+add date formatting utility
+
+日付フォーマット用のユーティリティ関数を追加。
+- formatDateISO: ISO 8601 (yyyy-mm-dd) 形式に整形
+- formatDateLocal: ja-JP ロケールの日付文字列に整形
+
+
+===COMMIT===
+initial commit
+

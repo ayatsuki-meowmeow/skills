@@ -1,0 +1,6 @@
+{
+  "total_tokens": 54681,
+  "duration_ms": 39696,
+  "total_duration_seconds": 39.7,
+  "note": "元の subagent (af1a7b74c16a4ded5) はレートリミットで途中失敗し、補完 subagent (ad8c03622d7495c83) で残作業を完了。記録値は補完 subagent 分のみ。元 subagent の duration_ms=75965, tool_uses=12 もあり、合計時間はおおよそ 75965+39696 ≒ 115661 ms。"
+}

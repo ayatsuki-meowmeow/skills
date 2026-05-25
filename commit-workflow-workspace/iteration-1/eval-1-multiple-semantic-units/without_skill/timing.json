@@ -1,0 +1,6 @@
+{
+  "total_tokens": 723,
+  "duration_ms": 72351,
+  "total_duration_seconds": 72.4,
+  "note": "subagent はレートリミット直後の最終応答で失敗報告したが、4 コミットの作成と outputs 保存はすべて完了している。total_tokens は失敗報告応答のみの値で、実際のタスク実行トークンは別カウント。"
+}

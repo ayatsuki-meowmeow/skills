@@ -1,0 +1,123 @@
+commit 8265e9f6b1a4af408e200bf34ed3cf5bad8e5efc
+Author: Reiji Kono <reiji.kono@aprender.jp>
+Commit: Reiji Kono <reiji.kono@aprender.jp>
+
+    add UserCard component
+    
+    User 情報を表示する UI コンポーネントを追加。
+    User 型を props として受け取り、email を表示する。
+---
+ src/components/UserCard.tsx | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/src/components/UserCard.tsx b/src/components/UserCard.tsx
+new file mode 100644
+index 0000000..2a8be22
+--- /dev/null
++++ b/src/components/UserCard.tsx
+@@ -0,0 +1,5 @@
++import type { User } from "../types/user"
++
++export function UserCard({ user }: { user: User }) {
++  return <div className="user-card">{user.email}</div>
++}
+
+commit 7beadb9914bc4df4e803ace0b65179f11c9754ab
+Author: Reiji Kono <reiji.kono@aprender.jp>
+Commit: Reiji Kono <reiji.kono@aprender.jp>
+
+    implement user service
+    
+    User に関するビジネスロジックを担う UserService を実装。
+    - findById: ID によるユーザー検索
+    - register: メールアドレスとパスワードによる新規登録
+---
+ src/services/user-service.ts | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/src/services/user-service.ts b/src/services/user-service.ts
+new file mode 100644
+index 0000000..c56ada4
+--- /dev/null
++++ b/src/services/user-service.ts
+@@ -0,0 +1,10 @@
++import type { User } from "../types/user"
++
++export class UserService {
++  async findById(id: string): Promise<User | null> {
++    return null
++  }
++  async register(email: string, password: string): Promise<User> {
++    return { id: "1", email }
++  }
++}
+
+commit 83f8b85961ec8a1cf9bbf195fd1814ae3daf1083
+Author: Reiji Kono <reiji.kono@aprender.jp>
+Commit: Reiji Kono <reiji.kono@aprender.jp>
+
+    add email validation utility
+    
+    メールアドレスのバリデーション用ユーティリティ関数を追加。
+    正規表現でフォーマットの妥当性のみを検証する。
+---
+ src/utils/email-validator.ts | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/src/utils/email-validator.ts b/src/utils/email-validator.ts
+new file mode 100644
+index 0000000..5e3edbe
+--- /dev/null
++++ b/src/utils/email-validator.ts
+@@ -0,0 +1,3 @@
++export function isValidEmail(value: string): boolean {
++  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
++}
+
+commit 182ed323407bdbc7c05a77b72ad094eee712a0a5
+Author: Reiji Kono <reiji.kono@aprender.jp>
+Commit: Reiji Kono <reiji.kono@aprender.jp>
+
+    add User type definition
+    
+    User エンティティの型定義を追加。
+    id と email を持つ共通の型として、サービス層と UI 層から参照される。
+---
+ src/types/user.ts | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/src/types/user.ts b/src/types/user.ts
+new file mode 100644
+index 0000000..bdbf6b8
+--- /dev/null
++++ b/src/types/user.ts
+@@ -0,0 +1,4 @@
++export type User = {
++  id: string
++  email: string
++}
+
+commit 14fe2fb8f0ddd51b129b588cf3d1a546a3b606bd
+Author: Reiji Kono <reiji.kono@aprender.jp>
+Commit: Reiji Kono <reiji.kono@aprender.jp>
+
+    initial commit
+---
+ README.md    | 1 +
+ package.json | 1 +
+ 2 files changed, 2 insertions(+)
+
+diff --git a/README.md b/README.md
+new file mode 100644
+index 0000000..a07909f
+--- /dev/null
++++ b/README.md
+@@ -0,0 +1 @@
++# sample-app
+diff --git a/package.json b/package.json
+new file mode 100644
+index 0000000..8fa4945
+--- /dev/null
++++ b/package.json
+@@ -0,0 +1 @@
++{ "name": "sample-app", "version": "0.0.1" }

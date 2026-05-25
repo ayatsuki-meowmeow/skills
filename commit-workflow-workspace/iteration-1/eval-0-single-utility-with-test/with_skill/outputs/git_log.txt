@@ -1,0 +1,31 @@
+commit 480fc1dc41913370e3191a84fa1bb1701d1a156d (HEAD -> main)
+Author:     Reiji Kono <reiji.kono@aprender.jp>
+AuthorDate: Mon May 25 14:52:11 2026 +0900
+Commit:     Reiji Kono <reiji.kono@aprender.jp>
+CommitDate: Mon May 25 14:52:11 2026 +0900
+
+    add tests for date formatting utility
+    
+    format-date ユーティリティに対するユニットテストを追加。
+    - formatDateISO: yyyy-mm-dd 形式で返ることを検証
+    - formatDateLocal: ja-JP ロケールの文字列を返すことを検証
+
+commit 2db991fde5b097ae8c8d69edf8d151435b46bd91
+Author:     Reiji Kono <reiji.kono@aprender.jp>
+AuthorDate: Mon May 25 14:52:04 2026 +0900
+Commit:     Reiji Kono <reiji.kono@aprender.jp>
+CommitDate: Mon May 25 14:52:04 2026 +0900
+
+    add date formatting utility
+    
+    日付フォーマット用のユーティリティ関数を追加。
+    - formatDateISO: ISO 8601 (yyyy-mm-dd) 形式に整形
+    - formatDateLocal: ja-JP ロケールの日付文字列に整形
+
+commit d05eba66382546b32d5e48aea38be75577ef82d5
+Author:     Reiji Kono <reiji.kono@aprender.jp>
+AuthorDate: Mon May 25 14:51:34 2026 +0900
+Commit:     Reiji Kono <reiji.kono@aprender.jp>
+CommitDate: Mon May 25 14:51:34 2026 +0900
+
+    initial commit

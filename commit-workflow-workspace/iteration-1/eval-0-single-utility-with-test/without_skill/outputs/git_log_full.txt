@@ -1,0 +1,65 @@
+commit 6af0b66ef5edbc81569ce173e1a1ef29e23e234e
+Author: Reiji Kono <reiji.kono@aprender.jp>
+Commit: Reiji Kono <reiji.kono@aprender.jp>
+
+    add formatDateISO and formatDateLocal utilities with tests
+    
+    Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>
+---
+ src/utils/format-date.test.ts | 9 +++++++++
+ src/utils/format-date.ts      | 7 +++++++
+ 2 files changed, 16 insertions(+)
+
+diff --git a/src/utils/format-date.test.ts b/src/utils/format-date.test.ts
+new file mode 100644
+index 0000000..8d263d0
+--- /dev/null
++++ b/src/utils/format-date.test.ts
+@@ -0,0 +1,9 @@
++import { formatDateISO, formatDateLocal } from "./format-date"
++
++test("formatDateISO returns yyyy-mm-dd", () => {
++  expect(formatDateISO(new Date("2026-05-25T10:00:00Z"))).toBe("2026-05-25")
++})
++
++test("formatDateLocal returns JP locale string", () => {
++  expect(formatDateLocal(new Date("2026-05-25T10:00:00Z"))).toMatch(/2026/)
++})
+diff --git a/src/utils/format-date.ts b/src/utils/format-date.ts
+new file mode 100644
+index 0000000..f104939
+--- /dev/null
++++ b/src/utils/format-date.ts
+@@ -0,0 +1,7 @@
++export function formatDateISO(date: Date): string {
++  return date.toISOString().slice(0, 10)
++}
++
++export function formatDateLocal(date: Date): string {
++  return date.toLocaleDateString("ja-JP")
++}
+
+commit be8975a3a13982323242fc3df9adaf9fee9c14d1
+Author: Reiji Kono <reiji.kono@aprender.jp>
+Commit: Reiji Kono <reiji.kono@aprender.jp>
+
+    initial commit
+---
+ README.md    | 1 +
+ package.json | 1 +
+ 2 files changed, 2 insertions(+)
+
+diff --git a/README.md b/README.md
+new file mode 100644
+index 0000000..a07909f
+--- /dev/null
++++ b/README.md
+@@ -0,0 +1 @@
++# sample-app
+diff --git a/package.json b/package.json
+new file mode 100644
+index 0000000..8fa4945
+--- /dev/null
++++ b/package.json
+@@ -0,0 +1 @@
++{ "name": "sample-app", "version": "0.0.1" }

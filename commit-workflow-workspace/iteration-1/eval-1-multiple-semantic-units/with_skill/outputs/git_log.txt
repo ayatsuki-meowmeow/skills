@@ -1,0 +1,52 @@
+commit 8265e9f6b1a4af408e200bf34ed3cf5bad8e5efc (HEAD -> main)
+Author:     Reiji Kono <reiji.kono@aprender.jp>
+AuthorDate: Mon May 25 14:55:08 2026 +0900
+Commit:     Reiji Kono <reiji.kono@aprender.jp>
+CommitDate: Mon May 25 14:55:08 2026 +0900
+
+    add UserCard component
+    
+    User 情報を表示する UI コンポーネントを追加。
+    User 型を props として受け取り、email を表示する。
+
+commit 7beadb9914bc4df4e803ace0b65179f11c9754ab
+Author:     Reiji Kono <reiji.kono@aprender.jp>
+AuthorDate: Mon May 25 14:52:54 2026 +0900
+Commit:     Reiji Kono <reiji.kono@aprender.jp>
+CommitDate: Mon May 25 14:52:54 2026 +0900
+
+    implement user service
+    
+    User に関するビジネスロジックを担う UserService を実装。
+    - findById: ID によるユーザー検索
+    - register: メールアドレスとパスワードによる新規登録
+
+commit 83f8b85961ec8a1cf9bbf195fd1814ae3daf1083
+Author:     Reiji Kono <reiji.kono@aprender.jp>
+AuthorDate: Mon May 25 14:52:47 2026 +0900
+Commit:     Reiji Kono <reiji.kono@aprender.jp>
+CommitDate: Mon May 25 14:52:47 2026 +0900
+
+    add email validation utility
+    
+    メールアドレスのバリデーション用ユーティリティ関数を追加。
+    正規表現でフォーマットの妥当性のみを検証する。
+
+commit 182ed323407bdbc7c05a77b72ad094eee712a0a5
+Author:     Reiji Kono <reiji.kono@aprender.jp>
+AuthorDate: Mon May 25 14:52:39 2026 +0900
+Commit:     Reiji Kono <reiji.kono@aprender.jp>
+CommitDate: Mon May 25 14:52:39 2026 +0900
+
+    add User type definition
+    
+    User エンティティの型定義を追加。
+    id と email を持つ共通の型として、サービス層と UI 層から参照される。
+
+commit 14fe2fb8f0ddd51b129b588cf3d1a546a3b606bd
+Author:     Reiji Kono <reiji.kono@aprender.jp>
+AuthorDate: Mon May 25 14:51:53 2026 +0900
+Commit:     Reiji Kono <reiji.kono@aprender.jp>
+CommitDate: Mon May 25 14:51:53 2026 +0900
+
+    initial commit

@@ -1,0 +1,80 @@
+commit 480fc1dc41913370e3191a84fa1bb1701d1a156d
+Author: Reiji Kono <reiji.kono@aprender.jp>
+Commit: Reiji Kono <reiji.kono@aprender.jp>
+
+    add tests for date formatting utility
+    
+    format-date ユーティリティに対するユニットテストを追加。
+    - formatDateISO: yyyy-mm-dd 形式で返ることを検証
+    - formatDateLocal: ja-JP ロケールの文字列を返すことを検証
+---
+ src/utils/format-date.test.ts | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/src/utils/format-date.test.ts b/src/utils/format-date.test.ts
+new file mode 100644
+index 0000000..8d263d0
+--- /dev/null
++++ b/src/utils/format-date.test.ts
+@@ -0,0 +1,9 @@
++import { formatDateISO, formatDateLocal } from "./format-date"
++
++test("formatDateISO returns yyyy-mm-dd", () => {
++  expect(formatDateISO(new Date("2026-05-25T10:00:00Z"))).toBe("2026-05-25")
++})
++
++test("formatDateLocal returns JP locale string", () => {
++  expect(formatDateLocal(new Date("2026-05-25T10:00:00Z"))).toMatch(/2026/)
++})
+
+commit 2db991fde5b097ae8c8d69edf8d151435b46bd91
+Author: Reiji Kono <reiji.kono@aprender.jp>
+Commit: Reiji Kono <reiji.kono@aprender.jp>
+
+    add date formatting utility
+    
+    日付フォーマット用のユーティリティ関数を追加。
+    - formatDateISO: ISO 8601 (yyyy-mm-dd) 形式に整形
+    - formatDateLocal: ja-JP ロケールの日付文字列に整形
+---
+ src/utils/format-date.ts | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/src/utils/format-date.ts b/src/utils/format-date.ts
+new file mode 100644
+index 0000000..f104939
+--- /dev/null
++++ b/src/utils/format-date.ts
+@@ -0,0 +1,7 @@
++export function formatDateISO(date: Date): string {
++  return date.toISOString().slice(0, 10)
++}
++
++export function formatDateLocal(date: Date): string {
++  return date.toLocaleDateString("ja-JP")
++}
+
+commit d05eba66382546b32d5e48aea38be75577ef82d5
+Author: Reiji Kono <reiji.kono@aprender.jp>
+Commit: Reiji Kono <reiji.kono@aprender.jp>
+
+    initial commit
+---
+ README.md    | 1 +
+ package.json | 1 +
+ 2 files changed, 2 insertions(+)
+
+diff --git a/README.md b/README.md
+new file mode 100644
+index 0000000..a07909f
+--- /dev/null
++++ b/README.md
+@@ -0,0 +1 @@
++# sample-app
+diff --git a/package.json b/package.json
+new file mode 100644
+index 0000000..8fa4945
+--- /dev/null
++++ b/package.json
+@@ -0,0 +1 @@
++{ "name": "sample-app", "version": "0.0.1" }

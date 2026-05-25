@@ -1,0 +1,45 @@
+{
+  "summary": {
+    "pass_rate": 1.0,
+    "passed": 7,
+    "failed": 0,
+    "total": 7
+  },
+  "expectations": [
+    {
+      "text": "新規コミットが少なくとも1つ作成されている",
+      "passed": true,
+      "evidence": "new commits = 2"
+    },
+    {
+      "text": "すべての変更がコミットされている",
+      "passed": true,
+      "evidence": "git status --porcelain output: ''"
+    },
+    {
+      "text": "全コミットの1行目（subject）が ASCII のみ（=英語）",
+      "passed": true,
+      "evidence": "non-ASCII subjects: (none)"
+    },
+    {
+      "text": "全コミットメッセージで1行目の次が空行",
+      "passed": true,
+      "evidence": "commits without blank line after subject: (none)"
+    },
+    {
+      "text": "全コミットメッセージの本文に日本語文字が含まれる",
+      "passed": true,
+      "evidence": "commits without Japanese in body: (none)"
+    },
+    {
+      "text": "全コミットメッセージに Co-Authored-By が含まれない",
+      "passed": true,
+      "evidence": "commits with Co-Authored-By: (none)"
+    },
+    {
+      "text": "全コミットの Author/Committer が Reiji Kono <reiji.kono@aprender.jp>",
+      "passed": true,
+      "evidence": "commits with unexpected author/committer: (none)"
+    }
+  ]
+}
