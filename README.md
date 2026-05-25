@@ -56,6 +56,8 @@ neverthrow-coding-rules/
     └── iteration-3/
 ```
 
+If the skill needs a custom grading script (e.g., one that inspects `git log` output or other side effects that the default eval runner can't check), place it as `workspace/grade.py`. Never create a sibling directory like `<skill-name>-workspace/` at the repository root — eval artifacts always live under the skill directory's own `workspace/`.
+
 ## Copying Skills to a Project
 
 Skills live in `<project>/.claude/skills/<skill-name>/SKILL.md`. Copy any skill you need into your project's `.claude/skills/` directory.

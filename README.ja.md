@@ -56,6 +56,8 @@ neverthrow-coding-rules/
     └── iteration-3/
 ```
 
+カスタムな採点スクリプト（`git log` の出力や、デフォルトの eval runner では拾えない副作用を検証するためのスクリプトなど）が必要な場合は、`workspace/grade.py` として配置します。`<スキル名>-workspace/` のような兄弟ディレクトリをリポジトリ直下に作ってはいけません。eval 関連の成果物は必ずそのスキルディレクトリ配下の `workspace/` に置きます。
+
 ## スキルをプロジェクトにコピーする方法
 
 スキルは `<プロジェクトルート>/.claude/skills/<スキル名>/SKILL.md` に配置します。必要なスキルをプロジェクトの `.claude/skills/` ディレクトリにコピーしてください。
