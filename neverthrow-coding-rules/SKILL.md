@@ -4,7 +4,7 @@ description: |
   neverthrow を使ったプロジェクトで TypeScript コードを書くときに必ず参照すべきコーディング規約スキル。
   fetch・DB・バリデーション等の実装タスクや TypeScript コードレビューで、このスキルのルールを強制する。
 
-  このスキルを必ず使うべきケース（積極的にトリガーすること）:
+  TRIGGER:
   - TypeScript で fetch / API コール / DB アクセス / バリデーション関数を実装するよう依頼されたとき
   - try/catch・async/await・Promise を含む TypeScript コードを書くとき
   - TypeScript / neverthrow のコードレビューを依頼されたとき
