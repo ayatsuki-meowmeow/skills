@@ -9,6 +9,7 @@
 | スキル | 説明 |
 |--------|------|
 | [`ts-type-safety`](./ts-type-safety/SKILL.md) | TypeScript のコーディング規約を強制する — `as` キャスト・`any`・`@ts-ignore` を禁止し、安全な代替手段を提供する |
+| [`function-signature-typing`](./function-signature-typing/SKILL.md) | 静的型付け言語のコーディング規約を強制する — 関数シグネチャ（引数・戻り値）の型アノテーション明示を必須化し、設計意図を契約として表現する |
 | [`neverthrow-setup`](./neverthrow-setup/SKILL.md) | TypeScript プロジェクトへの `neverthrow` 導入を一括サポート: パッケージインストール・`AppError` 判別共用体・`AppResult` 型エイリアス・`fromXxx` ヘルパー・ESLint 設定 |
 | [`neverthrow-coding-rules`](./neverthrow-coding-rules/SKILL.md) | `neverthrow` のコーディング規約を強制する — 生の `throw`・ロジックエラーへの `try/catch`・アンラップされた `Result` 値を禁止する |
 
