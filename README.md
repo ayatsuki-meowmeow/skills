@@ -12,6 +12,7 @@ A collection of Claude Code skills for development.
 | [`function-signature-typing`](./function-signature-typing/SKILL.md) | Enforces explicit type annotations on function signatures (arguments and return values) across statically-typed languages — turns inferred types into contracts that capture design intent |
 | [`neverthrow-setup`](./neverthrow-setup/SKILL.md) | Sets up `neverthrow` in a TypeScript project: package install, `AppError` union type, `AppResult` alias, `fromXxx` helpers, and ESLint config |
 | [`neverthrow-coding-rules`](./neverthrow-coding-rules/SKILL.md) | Enforces `neverthrow` coding conventions — bans raw `throw`, `try/catch` for logic errors, and unwrapped `Result` values |
+| [`commit-workflow`](./commit-workflow/SKILL.md) | Enforces a git commit workflow — splits changes by semantic unit (business logic, utility, UI, tests, etc.), formats messages as English summary + blank line + Japanese detail, and forbids `Co-Authored-By` footers |
 
 ## Skill Directory Structure
 

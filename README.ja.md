@@ -12,6 +12,7 @@
 | [`function-signature-typing`](./function-signature-typing/SKILL.md) | 静的型付け言語のコーディング規約を強制する — 関数シグネチャ（引数・戻り値）の型アノテーション明示を必須化し、設計意図を契約として表現する |
 | [`neverthrow-setup`](./neverthrow-setup/SKILL.md) | TypeScript プロジェクトへの `neverthrow` 導入を一括サポート: パッケージインストール・`AppError` 判別共用体・`AppResult` 型エイリアス・`fromXxx` ヘルパー・ESLint 設定 |
 | [`neverthrow-coding-rules`](./neverthrow-coding-rules/SKILL.md) | `neverthrow` のコーディング規約を強制する — 生の `throw`・ロジックエラーへの `try/catch`・アンラップされた `Result` 値を禁止する |
+| [`commit-workflow`](./commit-workflow/SKILL.md) | Git コミット作成のワークフローを強制する — 変更を意味単位（ビジネスロジック / ユーティリティ / UI / テスト 等）で分割し、コミットメッセージを「英語サマリ → 空行 → 日本語詳細」の形式で書き、`Co-Authored-By:` フッターを禁止する |
 
 ## スキルディレクトリの構成
 
