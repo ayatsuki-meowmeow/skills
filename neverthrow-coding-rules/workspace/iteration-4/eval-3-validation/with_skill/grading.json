@@ -1,0 +1,30 @@
+{
+  "expectations": [
+    {
+      "text": "戻り値に AppResult/AppResultAsync エイリアスを使っている",
+      "passed": true,
+      "evidence": "AppResult<ValidatedInput, ValidateError> を返す"
+    },
+    {
+      "text": "エラー型 E を型引数として明示している（E を省略していない）",
+      "passed": true,
+      "evidence": "type ValidateError = ErrorOf<'validation'> を E に明示"
+    },
+    {
+      "text": "E が AppError 全体ではなく、実際に返し得る kind の部分集合（ErrorOf<...> 等）になっている",
+      "passed": true,
+      "evidence": "E は validation のみ。シグネチャで validation しか返さないと分かる"
+    },
+    {
+      "text": "match の switch が、E に含まれる kind だけを扱っている（起こり得ない kind を書いていない）",
+      "passed": true,
+      "evidence": "switch は validation のみ。not_found/db は来ない旨を明記"
+    }
+  ],
+  "summary": {
+    "passed": 4,
+    "failed": 0,
+    "total": 4,
+    "pass_rate": 1.0
+  }
+}

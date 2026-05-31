@@ -1,0 +1,30 @@
+{
+  "expectations": [
+    {
+      "text": "戻り値に AppResult/AppResultAsync エイリアスを使っている",
+      "passed": true,
+      "evidence": "AppResultAsync<User> を返す（エイリアス自体は使用）"
+    },
+    {
+      "text": "エラー型 E を型引数として明示している（E を省略していない）",
+      "passed": false,
+      "evidence": "E を渡していない。AppResultAsync<T> = ResultAsync<T, AppError> で全ユニオン固定"
+    },
+    {
+      "text": "E が AppError 全体ではなく、実際に返し得る kind の部分集合（ErrorOf<...> 等）になっている",
+      "passed": false,
+      "evidence": "AppError 全体が E。部分集合への絞り込み無し（この回では AppError を2種に再定義して誤魔化している）"
+    },
+    {
+      "text": "match の switch が、E に含まれる kind だけを扱っている（起こり得ない kind を書いていない）",
+      "passed": true,
+      "evidence": "switch は not_found / unknown のみ（ただし AppError を最小再定義したため。関数シグネチャ上の精度ではない）"
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 2,
+    "total": 4,
+    "pass_rate": 0.5
+  }
+}

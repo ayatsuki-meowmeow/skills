@@ -1,0 +1,11 @@
+{
+  "eval_id": 2,
+  "eval_name": "eval-2-code-review",
+  "prompt": "以下のTypeScriptコード（try/catch + throw の getUser）をレビューしてください。",
+  "assertions": [
+    "try/catch を問題として指摘し ResultAsync/neverthrow への移行を提案している",
+    "改善コードの戻り値に AppResult/AppResultAsync エイリアスを使っている",
+    "改善コードで エラー型 E を型引数として明示している（E を省略していない）",
+    "E が AppError 全体でなく、実際に返し得る kind の部分集合（ErrorOf<...> 等）になっている"
+  ]
+}

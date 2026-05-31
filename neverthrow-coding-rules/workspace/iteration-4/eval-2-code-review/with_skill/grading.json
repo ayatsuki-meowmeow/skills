@@ -1,0 +1,30 @@
+{
+  "expectations": [
+    {
+      "text": "try/catch を問題として指摘し ResultAsync/neverthrow への移行を提案している",
+      "passed": true,
+      "evidence": "try/catch での握り潰しを指摘し ResultAsync ベースへの書き換えを提案"
+    },
+    {
+      "text": "改善コードの戻り値に AppResult/AppResultAsync エイリアスを使っている",
+      "passed": true,
+      "evidence": "改善コードが AppResultAsync<User, GetUserError> を返す"
+    },
+    {
+      "text": "改善コードで エラー型 E を型引数として明示している（E を省略していない）",
+      "passed": true,
+      "evidence": "type GetUserError = ErrorOf<'not_found' | 'unknown'> を E に明示。指摘#3でも E の部分集合明示を要求"
+    },
+    {
+      "text": "E が AppError 全体でなく、実際に返し得る kind の部分集合（ErrorOf<...> 等）になっている",
+      "passed": true,
+      "evidence": "E は not_found | unknown の部分集合。switch も該当2種のみ"
+    }
+  ],
+  "summary": {
+    "passed": 4,
+    "failed": 0,
+    "total": 4,
+    "pass_rate": 1.0
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "eval_id": "eval-1-api-fetch",
+  "eval_name": "api-fetch-explicit-E",
+  "prompt": "fetch で /api/users/:id からユーザー情報を取得する TypeScript の関数を実装してください。404の場合はnot_foundとして扱い、それ以外のエラーはunknownとします。",
+  "assertions": [
+    "戻り値に AppResult/AppResultAsync エイリアスを使っている",
+    "エラー型 E を型引数として明示している（E を省略していない）",
+    "E が AppError 全体ではなく、実際に返し得る kind の部分集合（ErrorOf<...> 等）になっている",
+    "match の switch が、E に含まれる kind だけを扱っている（起こり得ない kind を書いていない）"
+  ]
+}

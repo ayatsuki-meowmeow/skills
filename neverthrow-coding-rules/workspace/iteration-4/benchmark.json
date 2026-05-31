@@ -1,0 +1,315 @@
+{
+  "metadata": {
+    "skill_name": "neverthrow-coding-rules",
+    "skill_path": "/Users/konoreiji/skills/neverthrow-coding-rules",
+    "executor_model": "claude-opus-4-8",
+    "analyzer_model": "claude-opus-4-8",
+    "timestamp": "2026-05-31T13:20:00Z",
+    "evals_run": [
+      "eval-1-api-fetch",
+      "eval-2-code-review",
+      "eval-3-validation",
+      "eval-4-prisma-fetch"
+    ],
+    "runs_per_configuration": 1,
+    "note": "baseline=old_skill(git HEAD / E 固定版), with_skill=E 明示必須版。E 明示精度の検証イテレーション。"
+  },
+  "runs": [
+    {
+      "eval_id": 1,
+      "eval_name": "eval-1-api-fetch",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "time_seconds": 45.4,
+        "tokens": 17420,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "戻り値に AppResult/AppResultAsync エイリアスを使っている",
+          "passed": true,
+          "evidence": "AppResultAsync<User, FetchUserError> を返す"
+        },
+        {
+          "text": "エラー型 E を型引数として明示している（E を省略していない）",
+          "passed": true,
+          "evidence": "type FetchUserError = ErrorOf<'not_found' | 'unknown'> を E に明示"
+        },
+        {
+          "text": "E が AppError 全体ではなく、実際に返し得る kind の部分集合（ErrorOf<...> 等）になっている",
+          "passed": true,
+          "evidence": "E は not_found | unknown の部分集合。AppError 全体を渡していない"
+        },
+        {
+          "text": "match の switch が、E に含まれる kind だけを扱っている（起こり得ない kind を書いていない）",
+          "passed": true,
+          "evidence": "switch は not_found / unknown のみ。db・validation は型に無く書けない旨も明記"
+        }
+      ]
+    },
+    {
+      "eval_id": 1,
+      "eval_name": "eval-1-api-fetch",
+      "configuration": "old_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.5,
+        "passed": 2,
+        "failed": 2,
+        "total": 4,
+        "time_seconds": 34.8,
+        "tokens": 15390,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "戻り値に AppResult/AppResultAsync エイリアスを使っている",
+          "passed": true,
+          "evidence": "AppResultAsync<User> を返す（エイリアス自体は使用）"
+        },
+        {
+          "text": "エラー型 E を型引数として明示している（E を省略していない）",
+          "passed": false,
+          "evidence": "E を渡していない。AppResultAsync<T> = ResultAsync<T, AppError> で全ユニオン固定"
+        },
+        {
+          "text": "E が AppError 全体ではなく、実際に返し得る kind の部分集合（ErrorOf<...> 等）になっている",
+          "passed": false,
+          "evidence": "AppError 全体が E。部分集合への絞り込み無し（この回では AppError を2種に再定義して誤魔化している）"
+        },
+        {
+          "text": "match の switch が、E に含まれる kind だけを扱っている（起こり得ない kind を書いていない）",
+          "passed": true,
+          "evidence": "switch は not_found / unknown のみ（ただし AppError を最小再定義したため。関数シグネチャ上の精度ではない）"
+        }
+      ]
+    },
+    {
+      "eval_id": 2,
+      "eval_name": "eval-2-code-review",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "time_seconds": 59.5,
+        "tokens": 17963,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "try/catch を問題として指摘し ResultAsync/neverthrow への移行を提案している",
+          "passed": true,
+          "evidence": "try/catch での握り潰しを指摘し ResultAsync ベースへの書き換えを提案"
+        },
+        {
+          "text": "改善コードの戻り値に AppResult/AppResultAsync エイリアスを使っている",
+          "passed": true,
+          "evidence": "改善コードが AppResultAsync<User, GetUserError> を返す"
+        },
+        {
+          "text": "改善コードで エラー型 E を型引数として明示している（E を省略していない）",
+          "passed": true,
+          "evidence": "type GetUserError = ErrorOf<'not_found' | 'unknown'> を E に明示。指摘#3でも E の部分集合明示を要求"
+        },
+        {
+          "text": "E が AppError 全体でなく、実際に返し得る kind の部分集合（ErrorOf<...> 等）になっている",
+          "passed": true,
+          "evidence": "E は not_found | unknown の部分集合。switch も該当2種のみ"
+        }
+      ]
+    },
+    {
+      "eval_id": 2,
+      "eval_name": "eval-2-code-review",
+      "configuration": "old_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.5,
+        "passed": 2,
+        "failed": 2,
+        "total": 4,
+        "time_seconds": 73.4,
+        "tokens": 16520,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "try/catch を問題として指摘し ResultAsync/neverthrow への移行を提案している",
+          "passed": true,
+          "evidence": "try/catch での握り潰しを指摘し ResultAsync ベースへの書き換えを提案"
+        },
+        {
+          "text": "改善コードの戻り値に AppResult/AppResultAsync エイリアスを使っている",
+          "passed": true,
+          "evidence": "改善コードが AppResultAsync<User> を返す（エイリアス使用）"
+        },
+        {
+          "text": "改善コードで エラー型 E を型引数として明示している（E を省略していない）",
+          "passed": false,
+          "evidence": "E を渡していない。AppResultAsync<T> = ResultAsync<T, AppError> で全ユニオン固定"
+        },
+        {
+          "text": "E が AppError 全体でなく、実際に返し得る kind の部分集合（ErrorOf<...> 等）になっている",
+          "passed": false,
+          "evidence": "AppError 全体が E。switch に not_found/unauthorized/validation/unknown と起こり得ない kind を含む"
+        }
+      ]
+    },
+    {
+      "eval_id": 3,
+      "eval_name": "eval-3-validation",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "time_seconds": 30.4,
+        "tokens": 15679,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "戻り値に AppResult/AppResultAsync エイリアスを使っている",
+          "passed": true,
+          "evidence": "AppResult<ValidatedInput, ValidateError> を返す"
+        },
+        {
+          "text": "エラー型 E を型引数として明示している（E を省略していない）",
+          "passed": true,
+          "evidence": "type ValidateError = ErrorOf<'validation'> を E に明示"
+        },
+        {
+          "text": "E が AppError 全体ではなく、実際に返し得る kind の部分集合（ErrorOf<...> 等）になっている",
+          "passed": true,
+          "evidence": "E は validation のみ。シグネチャで validation しか返さないと分かる"
+        },
+        {
+          "text": "match の switch が、E に含まれる kind だけを扱っている（起こり得ない kind を書いていない）",
+          "passed": true,
+          "evidence": "switch は validation のみ。not_found/db は来ない旨を明記"
+        }
+      ]
+    },
+    {
+      "eval_id": 3,
+      "eval_name": "eval-3-validation",
+      "configuration": "old_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.25,
+        "passed": 1,
+        "failed": 3,
+        "total": 4,
+        "time_seconds": 34.9,
+        "tokens": 15542,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "戻り値に AppResult/AppResultAsync エイリアスを使っている",
+          "passed": true,
+          "evidence": "AppResult<ValidatedUser> を返す（エイリアス自体は使用）"
+        },
+        {
+          "text": "エラー型 E を型引数として明示している（E を省略していない）",
+          "passed": false,
+          "evidence": "E を渡していない。AppResult<T> = Result<T, AppError> で全ユニオン固定"
+        },
+        {
+          "text": "E が AppError 全体ではなく、実際に返し得る kind の部分集合（ErrorOf<...> 等）になっている",
+          "passed": false,
+          "evidence": "AppError 全体(5種)が E。validation しか返さないのに型に現れない"
+        },
+        {
+          "text": "match の switch が、E に含まれる kind だけを扱っている（起こり得ない kind を書いていない）",
+          "passed": false,
+          "evidence": "switch が validation/not_found/unauthorized/db/unknown の5ケースを処理。起こり得ない4ケースを強制されている"
+        }
+      ]
+    },
+    {
+      "eval_id": 4,
+      "eval_name": "eval-4-prisma-fetch",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "time_seconds": 42.1,
+        "tokens": 16436,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "戻り値に AppResult/AppResultAsync エイリアスを使っている",
+          "passed": true,
+          "evidence": "AppResultAsync<User, FetchUserError> を返す"
+        },
+        {
+          "text": "エラー型 E を型引数として明示している（E を省略していない）",
+          "passed": true,
+          "evidence": "type FetchUserError = ErrorOf<'not_found' | 'db'> を E に明示。fromDb も ErrorOf<'db'>"
+        },
+        {
+          "text": "E が AppError 全体ではなく、実際に返し得る kind の部分集合（ErrorOf<...> 等）になっている",
+          "passed": true,
+          "evidence": "E は not_found | db の部分集合。AppError 全体を渡していない"
+        },
+        {
+          "text": "match の switch が、E に含まれる kind だけを扱っている（起こり得ない kind を書いていない）",
+          "passed": true,
+          "evidence": "switch は not_found / db のみ。validation 等は型に無い旨を明記"
+        }
+      ]
+    },
+    {
+      "eval_id": 4,
+      "eval_name": "eval-4-prisma-fetch",
+      "configuration": "old_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.5,
+        "passed": 2,
+        "failed": 2,
+        "total": 4,
+        "time_seconds": 37.1,
+        "tokens": 15497,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "戻り値に AppResult/AppResultAsync エイリアスを使っている",
+          "passed": true,
+          "evidence": "AppResultAsync<User> を返す（エイリアス自体は使用）"
+        },
+        {
+          "text": "エラー型 E を型引数として明示している（E を省略していない）",
+          "passed": false,
+          "evidence": "E を渡していない。AppResultAsync<T> = ResultAsync<T, AppError> で全ユニオン固定"
+        },
+        {
+          "text": "E が AppError 全体ではなく、実際に返し得る kind の部分集合（ErrorOf<...> 等）になっている",
+          "passed": false,
+          "evidence": "AppError 全体が E。部分集合への絞り込み無し（AppError を2種に再定義して誤魔化している）"
+        },
+        {
+          "text": "match の switch が、E に含まれる kind だけを扱っている（起こり得ない kind を書いていない）",
+          "passed": true,
+          "evidence": "switch は not_found / db のみ（ただし AppError を最小再定義したため）"
+        }
+      ]
+    }
+  ]
+}

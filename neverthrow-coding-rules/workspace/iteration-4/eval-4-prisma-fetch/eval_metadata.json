@@ -1,0 +1,11 @@
+{
+  "eval_id": "eval-4-prisma-fetch",
+  "eval_name": "prisma-explicit-E",
+  "prompt": "Prisma を使ってユーザーを取得する TypeScript の関数を実装してください。ユーザーが存在しない場合は not_found、DB エラーは db として扱いたいです。",
+  "assertions": [
+    "戻り値に AppResult/AppResultAsync エイリアスを使っている",
+    "エラー型 E を型引数として明示している（E を省略していない）",
+    "E が AppError 全体ではなく、実際に返し得る kind の部分集合（ErrorOf<...> 等）になっている",
+    "match の switch が、E に含まれる kind だけを扱っている（起こり得ない kind を書いていない）"
+  ]
+}

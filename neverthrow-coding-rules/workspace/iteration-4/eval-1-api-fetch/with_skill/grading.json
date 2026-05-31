@@ -1,0 +1,30 @@
+{
+  "expectations": [
+    {
+      "text": "戻り値に AppResult/AppResultAsync エイリアスを使っている",
+      "passed": true,
+      "evidence": "AppResultAsync<User, FetchUserError> を返す"
+    },
+    {
+      "text": "エラー型 E を型引数として明示している（E を省略していない）",
+      "passed": true,
+      "evidence": "type FetchUserError = ErrorOf<'not_found' | 'unknown'> を E に明示"
+    },
+    {
+      "text": "E が AppError 全体ではなく、実際に返し得る kind の部分集合（ErrorOf<...> 等）になっている",
+      "passed": true,
+      "evidence": "E は not_found | unknown の部分集合。AppError 全体を渡していない"
+    },
+    {
+      "text": "match の switch が、E に含まれる kind だけを扱っている（起こり得ない kind を書いていない）",
+      "passed": true,
+      "evidence": "switch は not_found / unknown のみ。db・validation は型に無く書けない旨も明記"
+    }
+  ],
+  "summary": {
+    "passed": 4,
+    "failed": 0,
+    "total": 4,
+    "pass_rate": 1.0
+  }
+}
