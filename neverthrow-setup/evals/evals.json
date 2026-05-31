@@ -4,7 +4,7 @@
     {
       "id": 1,
       "prompt": "neverthrow を導入したい。プロジェクトでは fetch でのAPI呼び出しと Prisma でのDB操作があります。エラーとしてはバリデーションエラー、認証エラー、DBエラーを想定しています。セットアップしてください。",
-      "expected_output": "AppError 判別共用体（validation / unauthorized / db / unknown を含む）、AppResult<T> / AppResultAsync<T> 型エイリアス、fromFetch / fromDb ヘルパー、eslint-plugin-neverthrow の設定コードが生成される",
+      "expected_output": "AppError 判別共用体（validation / unauthorized / db / unknown を含む）、E 必須の AppResult<T, E> / AppResultAsync<T, E> 型エイリアスと ErrorOf ヘルパー、fromFetch / fromDb ヘルパー（戻り値の E を実際に返し得る kind に絞る）、eslint-plugin-neverthrow の設定コードが生成される",
       "files": [],
       "assertions": [
         {
@@ -12,16 +12,16 @@
           "description": "AppError 型に kind: 'validation', 'unauthorized', 'db', 'unknown' のすべてが含まれている"
         },
         {
-          "name": "AppResult<T> と AppResultAsync<T> 型エイリアスが定義されている",
-          "description": "両方の型エイリアスが正しく定義されている"
+          "name": "AppResult<T, E> / AppResultAsync<T, E> が E 必須で定義されている",
+          "description": "両エイリアスが E extends AppError を持ち、デフォルト値を設定していない（E 省略はコンパイルエラーになる）。ErrorOf<K> ヘルパーも定義されている"
         },
         {
-          "name": "fromFetch ヘルパーが作成されている",
-          "description": "fetch 用の変換ヘルパー関数が含まれている"
+          "name": "fromFetch ヘルパーが作成され、戻り値の E が絞られている",
+          "description": "fetch 用の変換ヘルパー関数が含まれ、戻り値型が AppError 全体ではなく実際に返し得る kind の部分集合（ErrorOf<...>）になっている"
         },
         {
-          "name": "fromDb ヘルパーが作成されている",
-          "description": "Prisma/DB 用の変換ヘルパー関数が含まれている"
+          "name": "fromDb ヘルパーが作成され、戻り値の E が絞られている",
+          "description": "Prisma/DB 用の変換ヘルパー関数が含まれ、戻り値型が ErrorOf<'db'> 等の部分集合になっている"
         },
         {
           "name": "eslint-plugin-neverthrow の設定が含まれている",
@@ -36,7 +36,7 @@
     {
       "id": 2,
       "prompt": "neverthrow のセットアップをお願いします。エラー種別はバリデーションと not_found の2種類だけです。fetchは使いますがDBは使いません。",
-      "expected_output": "AppError に validation / not_found / unknown が含まれる。fromFetch ヘルパーが作成される。DBヘルパーは不要なので作られない。eslint 設定も含まれる。",
+      "expected_output": "AppError に validation / not_found / unknown が含まれる。E 必須の AppResult<T, E> / AppResultAsync<T, E> と ErrorOf ヘルパーが定義される。fromFetch ヘルパーが戻り値の E を絞って作成される。DBヘルパーは不要なので作られない。eslint 設定も含まれる。",
       "files": [],
       "assertions": [
         {
@@ -56,8 +56,8 @@
           "description": "must-use-result ルールを含む ESLint 設定コードが示されている"
         },
         {
-          "name": "AppResult<T> と AppResultAsync<T> 型エイリアスが定義されている",
-          "description": "両方の型エイリアスが正しく定義されている"
+          "name": "AppResult<T, E> / AppResultAsync<T, E> が E 必須で定義されている",
+          "description": "両エイリアスが E extends AppError を持ち、デフォルト値を設定していない。ErrorOf<K> ヘルパーも定義されている"
         }
       ]
     }

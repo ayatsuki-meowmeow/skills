@@ -51,14 +51,35 @@ export type AppError =
 
 ## 3. 型エイリアスの定義
 
+エラー型 `E` は**必ず明示**させる。デフォルト値を置かないことで「省略するとコンパイルエラー」となり、エラー型の明示が型レベルのガードレールになる。
+
 ```typescript
 // src/types/result.ts（または errors.ts と同じファイルでも可）
 import { Result, ResultAsync } from 'neverthrow'
 import type { AppError } from './errors'
 
-export type AppResult<T> = Result<T, AppError>
-export type AppResultAsync<T> = ResultAsync<T, AppError>
+// E は必須。デフォルトを置かない＝省略不可（ガードレール）
+export type AppResult<T, E extends AppError> = Result<T, E>
+export type AppResultAsync<T, E extends AppError> = ResultAsync<T, E>
+
+// AppError から kind の部分集合を取り出すヘルパー
+export type ErrorOf<K extends AppError['kind']> = Extract<AppError, { kind: K }>
 ```
+
+関数ごとに**実際に返し得る `kind` だけ**を `E` に指定する。これにより：
+
+- シグネチャを見るだけで、その関数が返すエラー種別が分かる（実装を読まなくてよい）
+- 想定外の `kind` を返すとコンパイルエラーになる（返すべきでないエラーの流出を型で防ぐ）
+
+```typescript
+// ✅ 返し得るのは not_found / unauthorized / unknown だけ、と契約が型に現れる
+const fetchUser = (id: string): AppResultAsync<User, ErrorOf<'not_found' | 'unauthorized' | 'unknown'>> => ...
+
+// ❌ E を省略 → コンパイルエラー（ガードレールが働く）
+const fetchUser = (id: string): AppResultAsync<User> => ...
+```
+
+`E` に `AppError` 全体を渋々渡すのは精度を捨てる行為なので避ける。実際に返し得る部分集合だけを書く。
 
 ## 4. fromXxx ヘルパーの作成
 
@@ -90,50 +111,54 @@ ResultAsync.fromPromise(
 
 **OK（andThen を使った正しいパターン）:**
 ```typescript
-// ✅ 正しいパターン
+// ✅ 正しいパターン（E は実際に返し得る kind だけに絞る）
+type E = ErrorOf<'unauthorized' | 'unknown'>
 ResultAsync.fromPromise(
   fetch(url),
-  (e): AppError => ({ kind: 'unknown', cause: e }), // ここはネットワーク断のみ
+  (e): E => ({ kind: 'unknown', cause: e }), // ここはネットワーク断のみ
 ).andThen((res) => {
   // 既知エラーは andThen の中で err() として返す
-  if (res.status === 401) return err<T, AppError>({ kind: 'unauthorized' })
-  return ResultAsync.fromPromise(res.json() as Promise<T>, (e): AppError => ({ kind: 'unknown', cause: e }))
+  if (res.status === 401) return err<T, E>({ kind: 'unauthorized' })
+  return ResultAsync.fromPromise(res.json() as Promise<T>, (e): E => ({ kind: 'unknown', cause: e }))
 })
 ```
 
 ### 実装例
 
+ヘルパーの戻り値型も、そのヘルパーが**実際に返し得る `kind` だけ**を `E` に明示する。
+
 ```typescript
 // src/lib/result-helpers.ts
 
 import { ResultAsync, err } from 'neverthrow'
-import type { AppError } from '../types/errors'
+import type { AppResultAsync, ErrorOf } from '../types/result'
 
-// fetch 用
+// fetch 用：返し得るのは not_found / unauthorized / unknown のみ
+type FetchError = ErrorOf<'not_found' | 'unauthorized' | 'unknown'>
+
 export const fromFetch = <T>(
   request: RequestInfo | URL,
   init?: RequestInit,
-): AppResultAsync<T> =>
+): AppResultAsync<T, FetchError> =>
   ResultAsync.fromPromise(
     fetch(request, init),
-    (e): AppError => ({ kind: 'unknown', cause: e }), // ネットワーク断のみ
+    (e): FetchError => ({ kind: 'unknown', cause: e }), // ネットワーク断のみ
   ).andThen((res) => {
     if (res.status === 404)
-      return err<T, AppError>({ kind: 'not_found', resource: String(request) })
+      return err<T, FetchError>({ kind: 'not_found', resource: String(request) })
     if (res.status === 401)
-      return err<T, AppError>({ kind: 'unauthorized' })
+      return err<T, FetchError>({ kind: 'unauthorized' })
     if (!res.ok)
-      return err<T, AppError>({ kind: 'unknown', cause: res })
+      return err<T, FetchError>({ kind: 'unknown', cause: res })
     return ResultAsync.fromPromise(
       res.json() as Promise<T>,
-      (e): AppError => ({ kind: 'unknown', cause: e }),
+      (e): FetchError => ({ kind: 'unknown', cause: e }),
     )
   })
 
-// Prisma 用（使用する場合）
-// DB エラーはすべて unknown なので errMapper のみでよい
-export const fromDb = <T>(promise: Promise<T>): AppResultAsync<T> =>
-  ResultAsync.fromPromise(promise, (e): AppError => ({ kind: 'db', cause: e }))
+// Prisma 用（使用する場合）：DB エラーのみ
+export const fromDb = <T>(promise: Promise<T>): AppResultAsync<T, ErrorOf<'db'>> =>
+  ResultAsync.fromPromise(promise, (e): ErrorOf<'db'> => ({ kind: 'db', cause: e }))
 ```
 
 ## 5. eslint-plugin-neverthrow の設定
@@ -167,5 +192,6 @@ export default [
 ## セットアップ完了後
 
 - エラー種別の追加・変更は `AppError` 型を修正するだけで、`switch` 文の網羅チェックが漏れを検出する
+- 関数を書くときは戻り値の `E` に実際に返し得る `kind` だけを `ErrorOf<...>` で明示する（省略はコンパイルエラー）
 - 新たな外部境界が増えたら `fromXxx` ヘルパーを1つ追加する
 - presentation 層（React コンポーネント・hooks 等）では neverthrow は使わず TanStack Query 等に委譲する
