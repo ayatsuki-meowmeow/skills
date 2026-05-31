@@ -4,7 +4,7 @@
     {
       "id": 1,
       "prompt": "fetch で /api/users/:id からユーザー情報を取得する TypeScript の関数を実装してください。404の場合はnot_foundとして扱い、それ以外のエラーはunknownとします。",
-      "expected_output": "ResultAsync を返す関数が実装される。AppError の判別共用体と AppResultAsync<T> エイリアスが使われる。try/catch は使わない。fromPromise または fromFetch ヘルパーパターンが使われる。",
+      "expected_output": "ResultAsync を返す関数が実装される。AppError の判別共用体と AppResultAsync<T, E> エイリアスが使われ、E は実際に返し得る kind（ErrorOf<'not_found' | 'unknown'>）に絞られる。try/catch は使わない。fromPromise または fromFetch ヘルパーパターンが使われる。",
       "files": [],
       "assertions": [
         {
@@ -20,15 +20,15 @@
           "description": "エラーオブジェクトに kind: 'not_found' と kind: 'unknown' が使われている"
         },
         {
-          "name": "AppResult/AppResultAsync 型エイリアスを使っている",
-          "description": "Result<T, AppError> と直接書かず AppResultAsync<T> 等のエイリアスを使用している"
+          "name": "エイリアスを使い、E を実際に返し得る kind に明示している",
+          "description": "Result<T, E> と直接書かずエイリアスを使い、戻り値の E を AppError 全体ではなく ErrorOf<...> 等の部分集合で明示している（E の省略・全ユニオン丸投げをしない）"
         }
       ]
     },
     {
       "id": 2,
       "prompt": "以下のTypeScriptコードをレビューしてください。\n\n```typescript\nasync function getUser(id: string): Promise<User> {\n  try {\n    const res = await fetch(`/api/users/${id}`);\n    if (!res.ok) throw new Error('fetch failed');\n    return await res.json();\n  } catch (e) {\n    console.error(e);\n    throw e;\n  }\n}\n```",
-      "expected_output": "neverthrow の規約に基づいたレビューがされる。try/catch ではなく ResultAsync を使うべきという指摘。AppError の判別共用体、AppResultAsync<T> エイリアスを使った改善例が示される。",
+      "expected_output": "neverthrow の規約に基づいたレビューがされる。try/catch ではなく ResultAsync を使うべきという指摘。AppError の判別共用体、E を明示した AppResultAsync<T, E> エイリアスを使った改善例が示される。",
       "files": [],
       "assertions": [
         {
@@ -44,15 +44,15 @@
           "description": "kind フィールドを持つ AppError 型での改善コードが含まれている"
         },
         {
-          "name": "Promise<User> から AppResultAsync への変更が示されている",
-          "description": "返り値型を Promise<User> から ResultAsync/AppResultAsync に変えることが提案されている"
+          "name": "Promise<User> から AppResultAsync<T, E> への変更が示されている",
+          "description": "返り値型を Promise<User> から ResultAsync/AppResultAsync に変え、E を実際に返し得る kind に絞ることが提案されている"
         }
       ]
     },
     {
       "id": 3,
       "prompt": "名前（string）とメール（string）を受け取るバリデーション関数を TypeScript で実装してください。名前は1文字以上、メールは@を含む必要があります。バリデーション失敗時はエラーメッセージを返したいです。",
-      "expected_output": "Result<ValidatedInput, AppError> を返す関数が実装される。失敗時は { kind: 'validation', message: '...' } を err() で返す。成功時は ok() で返す。try/catch は使わない。",
+      "expected_output": "AppResult<ValidatedInput, ErrorOf<'validation'>> を返す関数が実装される（E は validation に絞る）。失敗時は { kind: 'validation', message: '...' } を err() で返す。成功時は ok() で返す。try/catch は使わない。",
       "files": [],
       "assertions": [
         {
@@ -77,7 +77,7 @@
     {
       "id": 4,
       "prompt": "Prisma を使ってユーザーを取得する TypeScript の関数を実装してください。ユーザーが存在しない場合は not_found、DB エラーは db として扱いたいです。\n\n```typescript\n// 使用する Prisma クライアント\nconst prisma = new PrismaClient()\n```",
-      "expected_output": "ResultAsync を返す関数が実装される。try/catch ではなく ResultAsync.fromPromise を使う。not_found は prisma の null チェック後に andThen + err() で返す。db エラーは errMapper で処理する。AppResultAsync<T> エイリアスが使われる。",
+      "expected_output": "ResultAsync を返す関数が実装される。try/catch ではなく ResultAsync.fromPromise を使う。not_found は prisma の null チェック後に andThen + err() で返す。db エラーは errMapper で処理する。AppResultAsync<T, ErrorOf<'not_found' | 'db'>> エイリアスが E を絞って使われる。",
       "files": [],
       "assertions": [
         {
@@ -93,8 +93,8 @@
           "description": "findUnique が null を返したとき、andThen 内で err({ kind: 'not_found', ... }) として Result に変換している"
         },
         {
-          "name": "AppResult/AppResultAsync 型エイリアスを使っている",
-          "description": "Result<T, AppError> と直接書かず AppResultAsync<T> 等のエイリアスを使用している"
+          "name": "エイリアスを使い、E を実際に返し得る kind に明示している",
+          "description": "Result<T, E> と直接書かずエイリアスを使い、戻り値の E を AppError 全体ではなく ErrorOf<...> 等の部分集合で明示している（E の省略・全ユニオン丸投げをしない）"
         }
       ]
     }

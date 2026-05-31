@@ -46,14 +46,36 @@ type AppError =
 
 ## 型エイリアス
 
+エラー型 `E` は**必須**。デフォルトを置かないことで、省略するとコンパイルエラーになる＝エラー型の明示が型レベルのガードレールになる。
+
 ```typescript
 import { Result, ResultAsync } from 'neverthrow'
 
-type AppResult<T> = Result<T, AppError>
-type AppResultAsync<T> = ResultAsync<T, AppError>
+// E は必須（デフォルトなし）
+type AppResult<T, E extends AppError> = Result<T, E>
+type AppResultAsync<T, E extends AppError> = ResultAsync<T, E>
+
+// AppError から kind の部分集合を取り出すヘルパー
+type ErrorOf<K extends AppError['kind']> = Extract<AppError, { kind: K }>
 ```
 
-関数の返り値には必ず `AppResult<T>` / `AppResultAsync<T>` を使う。`Result<T, AppError>` と直接書かない。
+関数の返り値には必ずエイリアスを使い、**`E` には実際に返し得る `kind` の部分集合だけを明示**する。
+
+```typescript
+// ✅ 返し得るエラーがシグネチャに現れる。'db' を返すとコンパイルエラー
+const fetchUser = (id: string): AppResultAsync<User, ErrorOf<'not_found' | 'unauthorized' | 'unknown'>> => ...
+
+// ❌ E を省略 → コンパイルエラー（ガードレール）
+const fetchUser = (id: string): AppResultAsync<User> => ...
+
+// ❌ 実際は一部しか返さないのに AppError 全体を渡す → 精度が無に帰す
+const fetchUser = (id: string): AppResultAsync<User, AppError> => ...
+```
+
+このガードレールが守るもの：
+
+- **読み手（実装者・AIエージェント）**: シグネチャだけでその関数が返すエラーが分かり、実装を読む必要がない
+- **書き手**: 想定外の `kind` を返すコードはコンパイルが通らない
 
 ## 外部境界での変換
 
@@ -81,24 +103,27 @@ ResultAsync.fromPromise(
 
 ```typescript
 // OK: fromPromise は unknown error のみ。known error は andThen で err() に
-const fromFetch = <T>(url: RequestInfo): AppResultAsync<T> =>
+// E はこのヘルパーが実際に返し得る kind だけに絞る
+type FetchError = ErrorOf<'not_found' | 'unknown'>
+
+const fromFetch = <T>(url: RequestInfo): AppResultAsync<T, FetchError> =>
   ResultAsync.fromPromise(
     fetch(url),
-    (e): AppError => ({ kind: 'unknown', cause: e }), // ネットワーク断のみ
+    (e): FetchError => ({ kind: 'unknown', cause: e }), // ネットワーク断のみ
   ).andThen((res) => {
     if (res.status === 404)
-      return err<T, AppError>({ kind: 'not_found', resource: String(url) })
+      return err<T, FetchError>({ kind: 'not_found', resource: String(url) })
     if (!res.ok)
-      return err<T, AppError>({ kind: 'unknown', cause: res })
+      return err<T, FetchError>({ kind: 'unknown', cause: res })
     return ResultAsync.fromPromise(
       res.json() as Promise<T>,
-      (e): AppError => ({ kind: 'unknown', cause: e }),
+      (e): FetchError => ({ kind: 'unknown', cause: e }),
     )
   })
 
-// DB（Prisma 等）— DB エラーはすべて unknown なので errMapper のみでよい
-const fromDb = <T>(promise: Promise<T>): AppResultAsync<T> =>
-  ResultAsync.fromPromise(promise, (e): AppError => ({ kind: 'db', cause: e }))
+// DB（Prisma 等）— DB エラーのみ
+const fromDb = <T>(promise: Promise<T>): AppResultAsync<T, ErrorOf<'db'>> =>
+  ResultAsync.fromPromise(promise, (e): ErrorOf<'db'> => ({ kind: 'db', cause: e }))
 ```
 
 ### 原則
@@ -111,16 +136,18 @@ const fromDb = <T>(promise: Promise<T>): AppResultAsync<T> =>
 
 ### match で分岐（推奨）
 
+`E` を絞っているので、`switch` はその関数が**実際に返し得る `kind` だけ**を扱えばよい。E に無い `kind` は型に存在しないため、書こうとすると到達不能でエラーになる。
+
 ```typescript
+// 戻り値が AppResultAsync<User, ErrorOf<'not_found' | 'unauthorized' | 'unknown'>> の場合
 result.match(
   (data) => { /* 成功 */ },
   (err) => {
     switch (err.kind) {
-      case 'validation': return ...
-      case 'not_found':  return ...
-      case 'db':         return ...
-      case 'unknown':    return ...
-      // 漏れがあればコンパイルエラー
+      case 'not_found':    return ...
+      case 'unauthorized': return ...
+      case 'unknown':      return ...
+      // 'db' / 'validation' はそもそも来ない。漏れがあればコンパイルエラー
     }
   },
 )
@@ -162,6 +189,8 @@ const { data, isLoading } = useQuery({
 - `fromPromise` の errMapper 内で known error（404 等）を処理する（errMapper は unknown error 専用）
 - known error を `throw` して errMapper でキャッチするパターンを使う
 - AppError をクラス継承で定義する（`class ValidationError extends Error`）
-- `Result<T, AppError>` と直接書く（エイリアスを使う）
+- `Result<T, E>` と直接書く（エイリアスを使う）
+- エラー型 `E` を省略する（型エイリアスにデフォルトを持たせない＝省略はコンパイルエラー）
+- 実際に返し得る範囲より広いユニオン（`AppError` 全体など）を `E` に渡す（精度が失われる）
 - presentation 層で neverthrow を使う
 - `_unsafeUnwrap()` を本番コードで使う（テスト専用）
