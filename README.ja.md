@@ -18,13 +18,17 @@
 
 各スキルディレクトリには、そのスキルに関連するファイルをすべてまとめます。中身はスキルの性質によって異なります。
 
+どのスキルも `SKILL.md` は薄い entry point（20〜35 行）に保ち、ルール本体は `references/rules.md` に分離します。トリガー判定時には `SKILL.md` だけが読み込まれ、本体は invoke 後に必要に応じてロードされます。
+
 ### タイプ 1 — ルールのみ
 
 コーディング規約をプロンプトで定義するだけのスキル。自動実行による副作用がないため、動作確認用の workspace は不要です。
 
 ```
 ts-type-safety/
-└── SKILL.md          # スキル定義
+├── SKILL.md                  # 薄い entry point（frontmatter + 目的 / 参照 / 実行手順）
+└── references/
+    └── rules.md              # ルール本体
 ```
 
 ### タイプ 2 — セットアップ系
@@ -33,7 +37,9 @@ ts-type-safety/
 
 ```
 neverthrow-setup/
-├── SKILL.md                  # スキル定義
+├── SKILL.md                  # 薄い entry point
+├── references/
+│   └── rules.md              # セットアップ手順本体
 ├── evals/                    # eval 設定
 │   └── evals.json
 └── neverthrow-setup.skill    # 配布用バイナリ
@@ -45,7 +51,9 @@ neverthrow-setup/
 
 ```
 neverthrow-coding-rules/
-├── SKILL.md                          # スキル定義
+├── SKILL.md                          # 薄い entry point
+├── references/
+│   └── rules.md                      # ルール本体
 ├── evals/                            # eval 設定
 │   └── evals.json
 ├── neverthrow-coding-rules.skill     # 配布用バイナリ

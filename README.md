@@ -18,13 +18,17 @@ A collection of Claude Code skills for development.
 
 Each skill directory bundles everything related to that skill. The contents vary by skill type:
 
+Every skill keeps `SKILL.md` as a thin entry point (20–35 lines) and stores the rule body in `references/rules.md`. The trigger-time context only loads `SKILL.md`; the body is read on demand after the skill is invoked.
+
 ### Type 1 — Rules only
 
 For skills that only define coding conventions via a prompt, with no automated side effects to verify.
 
 ```
 ts-type-safety/
-└── SKILL.md          # skill definition
+├── SKILL.md                  # thin entry point (frontmatter + 目的 / 参照 / 実行手順)
+└── references/
+    └── rules.md              # rule body
 ```
 
 ### Type 2 — Setup
@@ -33,7 +37,9 @@ For skills that perform concrete, observable actions (install packages, write fi
 
 ```
 neverthrow-setup/
-├── SKILL.md                  # skill definition
+├── SKILL.md                  # thin entry point
+├── references/
+│   └── rules.md              # setup procedure body
 ├── evals/                    # eval configs
 │   └── evals.json
 └── neverthrow-setup.skill    # distributable binary
@@ -45,7 +51,9 @@ For skills that change how the model writes code. A `workspace/` directory is in
 
 ```
 neverthrow-coding-rules/
-├── SKILL.md                          # skill definition
+├── SKILL.md                          # thin entry point
+├── references/
+│   └── rules.md                      # rule body
 ├── evals/                            # eval configs
 │   └── evals.json
 ├── neverthrow-coding-rules.skill     # distributable binary
