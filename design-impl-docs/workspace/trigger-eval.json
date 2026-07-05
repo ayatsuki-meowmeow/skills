@@ -1,0 +1,22 @@
+[
+  {"query": "docs/checkout/design.md に決済まわりの仕様を追記したよ、確認してね", "should_trigger": true},
+  {"query": "昨日途中までやってた在庫同期バッチの実装、続きからお願いします", "should_trigger": true},
+  {"query": "ユーザー招待機能の開発を始めたいです。仕様はこれから相談しながら決めたいので、まず進められる形に整えてください", "should_trigger": true},
+  {"query": "impl.md が実際の実装と合ってない気がするので、見直して更新しておいて", "should_trigger": true},
+  {"query": "design.mdみた？通知まわりの要件ちょっと変えたんだけど", "should_trigger": true},
+  {"query": "さっき会話で決めたレート制限の仕様、ちゃんとドキュメントに反映してから実装を進めてください", "should_trigger": true},
+  {"query": "docs/billing/design.md に書いた仕様で実装始めてください。判断に迷うところは聞いて", "should_trigger": true},
+  {"query": "セッション切れちゃったんだけど、CSV エクスポート機能がどこまで進んでたか把握して続きをやって", "should_trigger": true},
+  {"query": "この前決めた検索機能の仕様で、未決事項ってどれが残ってたっけ", "should_trigger": true},
+  {"query": "design.md の auth セクション更新したので、みて反映お願いします", "should_trigger": true},
+  {"query": "README.md にインストール手順のセクションを追記してください", "should_trigger": false},
+  {"query": "design.py で import エラーが出てるので直してほしい", "should_trigger": false},
+  {"query": "マイクロサービス間の API 設計のベストプラクティスを教えて", "should_trigger": false},
+  {"query": "この OSS の docs/ 配下がどういう構成になってるか調べてまとめて", "should_trigger": false},
+  {"query": "顧客提出用の基本設計書を Word 形式で作りたいんだけど、テンプレートから起こせる？", "should_trigger": false},
+  {"query": "Figma のデザインどおりにヘッダーの CSS を調整して", "should_trigger": false},
+  {"query": "このプロジェクトは意思決定を ADR で記録する運用なので、今回の DB 選定も ADR に書いてください", "should_trigger": false},
+  {"query": "tsconfig.json を strict: true にして、出たエラーを直しておいて", "should_trigger": false},
+  {"query": "src/impl ディレクトリのファイルを命名規則に合わせて全部リネームして", "should_trigger": false},
+  {"query": "仕様書をレビューするときの一般的な観点をリストアップしてほしい", "should_trigger": false}
+]

@@ -1,0 +1,84 @@
+{
+  "skill_name": "design-impl-docs",
+  "evals": [
+    {
+      "id": 1,
+      "eval_name": "design-update",
+      "prompt": "docs/auth/design.md に追記したよ、確認してね",
+      "expected_output": "design.md と impl.md の両方を読み、差分（セッション TTL 60分→30分、アイドルタイムアウト新規要件）を特定する。影響箇所（src/auth/session.ts、impl.md）を洗い出し、対応方針をユーザーに報告する。報告前に勝手にコードを変更しない。",
+      "files": ["workspace/fixtures/auth-project"],
+      "assertions": [
+        {
+          "name": "design.md の差分を両方特定している",
+          "description": "response.md が design.md への追記 2 点（セッション TTL 60分→30分、アイドルタイムアウト 15 分の新規要件）の両方に言及している"
+        },
+        {
+          "name": "影響箇所として src/auth/session.ts を特定している",
+          "description": "response.md が影響箇所として src/auth/session.ts（SESSION_TTL_MINUTES 定数）を具体的に挙げている"
+        },
+        {
+          "name": "報告前に勝手にコードを変更していない",
+          "description": "workdir/src/auth/session.ts が fixture から変更されていない（確認依頼に対して報告のみで、実装着手していない）"
+        },
+        {
+          "name": "対応方針を添えてユーザーに報告している",
+          "description": "response.md に差分への対応方針（何をどう変えるか）が示され、ユーザーの確認・指示を待つ形になっている"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "eval_name": "spec-gap-escalation",
+      "prompt": "docs/reminder/design.md にリマインダー機能の仕様を書いたので、実装を進めてください",
+      "expected_output": "design.md を読んでから着手する。仕様の穴（通知方法が未定義、通知タイミングの既定値が未定義）を特定し、勝手に決めて実装せず、未決事項として design.md に記録した上でユーザーに確認する。仕様が明確な部分（dueDate フィールド追加など）のみ実装し、impl.md を作成する。",
+      "files": ["workspace/fixtures/reminder-project"],
+      "assertions": [
+        {
+          "name": "通知方法が未定義であることを特定しユーザーに確認している",
+          "description": "response.md が通知方法（メール / プッシュ / アプリ内など）が design.md で未定義であることを指摘し、ユーザーへの質問として返している"
+        },
+        {
+          "name": "通知タイミングの具体値が未定義であることを指摘している",
+          "description": "response.md が「期限の一定時間前」の具体値（何分前/何時間前か）が未定義であることを指摘している"
+        },
+        {
+          "name": "未定義の仕様を勝手に決めて実装していない",
+          "description": "workdir のコードに通知送信手段の実装（console 通知・メール送信・push 等の具体的なチャネル実装）が存在しない。dueDate 追加など仕様が明確な範囲に留まっている"
+        },
+        {
+          "name": "未決事項が design.md に記録されている",
+          "description": "workdir/docs/reminder/design.md の未決事項セクションに、特定した仕様の穴が項目として追記されている"
+        },
+        {
+          "name": "impl.md が作成されている",
+          "description": "workdir/docs/reminder/impl.md が作成され、実装した範囲・実装状況が記録されている"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "eval_name": "session-resume",
+      "prompt": "CSV エクスポートの続きをお願いします",
+      "expected_output": "作業前に docs/csv-export/design.md と impl.md を読む。impl.md の実装状況・「次にやること」から正しく再開する（escapeField のダブルクォートエスケープ対応）。design.md の RFC 4180 準拠仕様に従って実装し、完了後に impl.md の実装状況を更新する。",
+      "files": ["workspace/fixtures/csv-project"],
+      "assertions": [
+        {
+          "name": "design.md / impl.md を読んでから再開している",
+          "description": "response.md が impl.md の実装状況（進行中・未着手項目）を踏まえた説明をしており、ドキュメントを起点に作業していることが読み取れる"
+        },
+        {
+          "name": "impl.md の「次にやること」から正しく再開している",
+          "description": "escapeField にダブルクォート対応（\" を含むフィールドの囲み + \"\" への重ねエスケープ）が実装されている"
+        },
+        {
+          "name": "design.md の仕様（RFC 4180）に準拠している",
+          "description": "exportCsv を実装した場合、ヘッダー行の出力と CRLF（\\r\\n）での行連結が design.md の仕様どおりに実装されている"
+        },
+        {
+          "name": "完了後に impl.md が更新されている",
+          "description": "workdir/docs/csv-export/impl.md の実装状況が作業後の状態に更新されている（完了した項目のチェックが進んでいる）"
+        }
+      ]
+    }
+  ]
+}
