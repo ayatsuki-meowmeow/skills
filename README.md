@@ -13,6 +13,8 @@ A collection of Claude Code skills for development.
 | [`neverthrow-setup`](./neverthrow-setup/SKILL.md) | Sets up `neverthrow` in a TypeScript project: package install, `AppError` union type, `AppResult` alias, `fromXxx` helpers, and ESLint config |
 | [`neverthrow-coding-rules`](./neverthrow-coding-rules/SKILL.md) | Enforces `neverthrow` coding conventions — bans raw `throw`, `try/catch` for logic errors, and unwrapped `Result` values |
 | [`commit-workflow`](./commit-workflow/SKILL.md) | Enforces a git commit workflow — splits changes by semantic unit (business logic, utility, UI, tests, etc.), formats messages as English summary + blank line + Japanese detail, and forbids `Co-Authored-By` footers |
+| [`design-impl-docs`](./design-impl-docs/SKILL.md) | Manages development context with two documents — `design.md` (specs/requirements, edited by user and Claude) and `impl.md` (implementation details, edited by Claude only) — for easy session resumption and subagent context sharing |
+| [`subagent-orchestration`](./subagent-orchestration/SKILL.md) | Turns the main agent into an orchestrator — delegates research, implementation, docs, and review to specialized subagents, and escalates spec/requirement questions to the user, recording decisions in `design.md` |
 
 ## Skill Directory Structure
 

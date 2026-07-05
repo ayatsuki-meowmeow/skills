@@ -13,6 +13,8 @@
 | [`neverthrow-setup`](./neverthrow-setup/SKILL.md) | TypeScript プロジェクトへの `neverthrow` 導入を一括サポート: パッケージインストール・`AppError` 判別共用体・`AppResult` 型エイリアス・`fromXxx` ヘルパー・ESLint 設定 |
 | [`neverthrow-coding-rules`](./neverthrow-coding-rules/SKILL.md) | `neverthrow` のコーディング規約を強制する — 生の `throw`・ロジックエラーへの `try/catch`・アンラップされた `Result` 値を禁止する |
 | [`commit-workflow`](./commit-workflow/SKILL.md) | Git コミット作成のワークフローを強制する — 変更を意味単位（ビジネスロジック / ユーティリティ / UI / テスト 等）で分割し、コミットメッセージを「英語サマリ → 空行 → 日本語詳細」の形式で書き、`Co-Authored-By:` フッターを禁止する |
+| [`design-impl-docs`](./design-impl-docs/SKILL.md) | design.md（仕様・要件、ユーザーと Claude が編集）と impl.md（実装詳細、Claude のみ編集）の 2 ドキュメントで開発コンテキストを管理する — セッション再開とサブエージェントへのコンテキスト共有を容易にする |
+| [`subagent-orchestration`](./subagent-orchestration/SKILL.md) | メインエージェントをオーケストレーターにする — 調査・実装・ドキュメント・レビューを専門サブエージェントに委譲し、仕様・要件の疑問はユーザーへエスカレーションして決定を design.md に記録する |
 
 ## スキルディレクトリの構成
 
