@@ -1,0 +1,61 @@
+{
+  "skill_name": "subagent-orchestration",
+  "note": "サブエージェント委譲プロトコルの with/without 比較。単に「サブエージェントを起こすか」ではなく、本スキル固有の観測点（小タスクも委譲 / design.md 経由エスカレーション / モデル使い分け / 委譲プロンプトの構造 / 並列化 / impl.md 更新）を検証する。",
+  "evals": [
+    {
+      "id": "eval-1-small-fix",
+      "prompt": "src/utils/format.ts の formatDate 関数で、null を渡すと TypeError が出ています。null の場合は空文字を返すように直してください。修正内容とテスト方針を教えてください。",
+      "focus": "小さい修正でも委譲するか",
+      "assertions": [
+        {"name": "delegates_even_for_small_task", "description": "1 ファイル・数行の修正でも実装エージェントに委譲する計画になっている"},
+        {"name": "does_not_direct_edit", "description": "「小さいから自分で編集する」と決めていない"},
+        {"name": "delegation_prompt_mentions_impl_md", "description": "実装エージェントへの委譲プロンプトに impl.md への言及がある"}
+      ]
+    },
+    {
+      "id": "eval-2-ambiguous-feature",
+      "prompt": "ユーザープロフィール画面に「バッジ」を表示する機能を追加したいです。実装を進めてください。",
+      "focus": "曖昧な仕様を design.md 経由でエスカレーションするか",
+      "assertions": [
+        {"name": "recognizes_ambiguity", "description": "「バッジ」の仕様が曖昧であることを認識している（種類・付与条件・表示形式など）"},
+        {"name": "escalates_via_design_md", "description": "選択肢と推奨を design.md の未決事項セクションに書き、そこを見て決めてもらう旨を伝えている"},
+        {"name": "does_not_ask_in_chat_directly", "description": "チャットで長々と選択肢を列挙して口頭で決めさせようとしていない"},
+        {"name": "does_not_decide_alone", "description": "「たぶんこうだろう」で仕様を勝手に決めていない"}
+      ]
+    },
+    {
+      "id": "eval-3-investigation",
+      "prompt": "この Next.js プロジェクトの認証周りが今どういう実装になっているか調べて、リファクタしやすいポイントを教えてください。",
+      "focus": "調査を委譲するときのモデル・プロンプト構造",
+      "assertions": [
+        {"name": "delegates_to_investigation_agent", "description": "調査エージェントに委譲する計画である"},
+        {"name": "model_opus_selected", "description": "サブエージェントの model に opus を指定している"},
+        {"name": "prompt_mentions_design_md_or_impl_md", "description": "委譲プロンプトに design.md / impl.md のパスと「まず読め」の指示がある"},
+        {"name": "prompt_asks_context_self_report", "description": "委譲プロンプトに「コンテキスト使用率の自己申告」の指示がある"},
+        {"name": "prompt_includes_escalation_boundary", "description": "「仕様の疑問は自分で判断せず未解決の疑問として返せ」の指示がある"}
+      ]
+    },
+    {
+      "id": "eval-4-impl-with-spec",
+      "prompt": "docs/features/badges/design.md に仕様が書かれています。docs/features/badges/impl.md の方針に沿って `/api/users/:id/badges` エンドポイントを実装してください。",
+      "focus": "方針決定済みタスクは Sonnet で、impl.md 更新指示付きで委譲するか",
+      "assertions": [
+        {"name": "delegates_to_impl_agent", "description": "実装エージェントに委譲する計画である"},
+        {"name": "model_sonnet_selected", "description": "サブエージェントの model に sonnet を指定している"},
+        {"name": "prompt_mentions_design_md_and_impl_md", "description": "委譲プロンプトに design.md / impl.md 両方のパスへの参照がある"},
+        {"name": "prompt_requires_impl_md_update", "description": "完了後 impl.md の更新を指示している"},
+        {"name": "prompt_includes_escalation_boundary", "description": "「design.md から答えが出ない選択に直面したら勝手に決めず返せ」の指示がある"}
+      ]
+    },
+    {
+      "id": "eval-5-parallel-independent",
+      "prompt": "featureA と featureB は独立した 2 つの機能です。両方の現状を調査してください。",
+      "focus": "独立タスクの並列委譲",
+      "assertions": [
+        {"name": "delegates_both_investigations", "description": "両方を調査エージェントに委譲する計画である"},
+        {"name": "parallel_dispatch", "description": "同一ターンで 2 件を並列に委譲する（順次実行にしていない）"},
+        {"name": "does_not_serialize_wrongly", "description": "「片方が終わってから」と誤って直列化していない"}
+      ]
+    }
+  ]
+}
