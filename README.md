@@ -16,6 +16,7 @@ A collection of Claude Code skills for development.
 | [`design-impl-docs`](./design-impl-docs/SKILL.md) | Manages development context with two documents — `design.md` (specs/requirements, edited by user and Claude) and `impl.md` (implementation details, edited by Claude only) — for easy session resumption and subagent context sharing |
 | [`subagent-orchestration`](./subagent-orchestration/SKILL.md) | Turns the main agent into an orchestrator — delegates research, implementation, docs, and review to specialized subagents, and escalates spec/requirement questions to the user, recording decisions in `design.md` |
 | [`implement-review-loop`](./implement-review-loop/SKILL.md) | Runs the implementation phase as an implement → review → classify → record → fix loop — escalates spec/design findings via `design.md`, records other findings and responses in `impl.md`, and stops only when review findings hit zero and the user can verify |
+| [`code-review-agent`](./code-review-agent/SKILL.md) | Runs code review as parallel 5-lens review → Haiku confidence scoring → threshold filter → category-hinted findings — the five lenses are (1) external spec adherence, (2) internal doc consistency, (3) bugs & edge cases, (4) regression impact, (5) maintainability & readability. Used in `implement-review-loop`'s step 3 review |
 
 ## Skill Directory Structure
 

@@ -16,6 +16,7 @@
 | [`design-impl-docs`](./design-impl-docs/SKILL.md) | design.md（仕様・要件、ユーザーと Claude が編集）と impl.md（実装詳細、Claude のみ編集）の 2 ドキュメントで開発コンテキストを管理する — セッション再開とサブエージェントへのコンテキスト共有を容易にする |
 | [`subagent-orchestration`](./subagent-orchestration/SKILL.md) | メインエージェントをオーケストレーターにする — 調査・実装・ドキュメント・レビューを専門サブエージェントに委譲し、仕様・要件の疑問はユーザーへエスカレーションして決定を design.md に記録する |
 | [`implement-review-loop`](./implement-review-loop/SKILL.md) | 実装フェーズを「実装 → レビュー → 指摘分類 → 記録 → 対応」の反復ループとして回す — 仕様・設計に関わる指摘は design.md 経由でユーザーへエスカレーション、それ以外は impl.md の「レビュー指摘と対応」に記録し、レビュー指摘 0 件かつユーザーが動作確認できる状態になるまで止めない |
+| [`code-review-agent`](./code-review-agent/SKILL.md) | コードレビューを「5 レンズ並列 → Haiku confidence scoring → 閾値フィルタ → 分類ヒント付き指摘の返却」の構造で実行する — 5 レンズは (1) 外部仕様遵守 / (2) 内部整合性 / (3) バグ・エッジケース / (4) デグレ影響 / (5) 保守性・可読性。implement-review-loop の step 3 レビューで使う |
 
 ## スキルディレクトリの構成
 
