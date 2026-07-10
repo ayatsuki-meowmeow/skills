@@ -15,6 +15,7 @@ A collection of Claude Code skills for development.
 | [`commit-workflow`](./commit-workflow/SKILL.md) | Enforces a git commit workflow — splits changes by semantic unit (business logic, utility, UI, tests, etc.), formats messages as English summary + blank line + Japanese detail, and forbids `Co-Authored-By` footers |
 | [`design-impl-docs`](./design-impl-docs/SKILL.md) | Manages development context with two documents — `design.md` (specs/requirements, edited by user and Claude) and `impl.md` (implementation details, edited by Claude only) — for easy session resumption and subagent context sharing |
 | [`subagent-orchestration`](./subagent-orchestration/SKILL.md) | Turns the main agent into an orchestrator — delegates research, implementation, docs, and review to specialized subagents, and escalates spec/requirement questions to the user, recording decisions in `design.md` |
+| [`implement-review-loop`](./implement-review-loop/SKILL.md) | Runs the implementation phase as an implement → review → classify → record → fix loop — escalates spec/design findings via `design.md`, records other findings and responses in `impl.md`, and stops only when review findings hit zero and the user can verify |
 
 ## Skill Directory Structure
 

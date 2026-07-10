@@ -15,6 +15,7 @@
 | [`commit-workflow`](./commit-workflow/SKILL.md) | Git コミット作成のワークフローを強制する — 変更を意味単位（ビジネスロジック / ユーティリティ / UI / テスト 等）で分割し、コミットメッセージを「英語サマリ → 空行 → 日本語詳細」の形式で書き、`Co-Authored-By:` フッターを禁止する |
 | [`design-impl-docs`](./design-impl-docs/SKILL.md) | design.md（仕様・要件、ユーザーと Claude が編集）と impl.md（実装詳細、Claude のみ編集）の 2 ドキュメントで開発コンテキストを管理する — セッション再開とサブエージェントへのコンテキスト共有を容易にする |
 | [`subagent-orchestration`](./subagent-orchestration/SKILL.md) | メインエージェントをオーケストレーターにする — 調査・実装・ドキュメント・レビューを専門サブエージェントに委譲し、仕様・要件の疑問はユーザーへエスカレーションして決定を design.md に記録する |
+| [`implement-review-loop`](./implement-review-loop/SKILL.md) | 実装フェーズを「実装 → レビュー → 指摘分類 → 記録 → 対応」の反復ループとして回す — 仕様・設計に関わる指摘は design.md 経由でユーザーへエスカレーション、それ以外は impl.md の「レビュー指摘と対応」に記録し、レビュー指摘 0 件かつユーザーが動作確認できる状態になるまで止めない |
 
 ## スキルディレクトリの構成
 
