@@ -4,6 +4,8 @@
 
 > English version: [README.md](./README.md)
 
+このうち `subagent-orchestration` / `design-impl-docs` / `implement-review-loop` / `code-review-agent` の 4 スキルは互いに参照し合い、1 つの開発ワークフローとして機能します。関係と典型的なセッションの流れは [USAGE.ja.md](./USAGE.ja.md) を参照してください。
+
 ## スキル一覧
 
 | スキル | 説明 |

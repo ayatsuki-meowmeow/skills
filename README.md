@@ -4,6 +4,8 @@ A collection of Claude Code skills for development.
 
 > Japanese version: [README.ja.md](./README.ja.md)
 
+Four of these skills — `subagent-orchestration`, `design-impl-docs`, `implement-review-loop`, `code-review-agent` — interlock into a single development workflow. See [USAGE.md](./USAGE.md) for how they compose and a typical session flow.
+
 ## Available Skills
 
 | Skill | Description |
