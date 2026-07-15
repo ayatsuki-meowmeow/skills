@@ -80,14 +80,14 @@ The four skills below stack up to formalize this structure and information flow 
    - Classify findings as either "spec/design" or "implementation judgment"
    - Escalate spec/design findings via `design.md`; record the rest in `impl.md` per iteration
    - Delegate fixes to the implementation agent and increment N
-6. **Stopping condition** — when "0 review findings + lint passes + no open questions" is reached, run the final commit step (delegating to a project-specific commit skill such as `commit-workflow` if available) and then ask the user for verification and finish. If N == 3 without meeting the condition, record status, options, and recommendation in the `design.md` open-questions section and escalate to the user.
+6. **Stopping condition** — when "0 review findings + lint passes + no open questions" is reached, delegate to the **commit agent** as the loop's final step (see the "git operations" section of `subagent-orchestration`; the delegation prompt should point at a project-specific commit skill such as `commit-workflow` when available). Once the commit is complete, ask the user for verification and finish. The orchestrator never runs `git add` / `git commit` itself. If N == 3 without meeting the condition, record status, options, and recommendation in the `design.md` open-questions section and escalate to the user.
 
 > **Note on hook-based enforcement (optional)**
-> `implement-review-loop` runs the final commit itself, but two orthogonal hook setups can back it up if you want a mechanical safety net:
-> - **Commit-time skill invocation** — if a project has its own commit conventions (e.g. `commit-workflow`), a `pre-commit` git hook can be used to invoke that skill at commit time so the convention is enforced regardless of which caller triggered the commit.
-> - **Executing the commit itself** — Claude Code's `Stop` hook can be configured to run the commit at the end of a turn as well, which acts as a backstop for cases where the loop is bypassed or exits early.
+> `implement-review-loop` runs the final commit via a commit agent, but two orthogonal hook setups can back it up if you want a mechanical safety net:
+> - **Commit-time skill invocation** — if a project has its own commit conventions (e.g. `commit-workflow`), a Claude Code PreToolUse hook or a `pre-commit` git hook can invoke that skill so the convention is applied regardless of which caller triggered the commit.
+> - **Preventing orchestrator direct-commit** — putting `Bash(git commit:*)` into `permissions.ask` catches cases where the orchestrator would otherwise call git directly (commit-agent-driven commits still go through as expected).
 >
-> These are project-level infrastructure choices, not part of this skill. The loop assumes only that a commit happens at the end of a successful iteration.
+> These are project-level infrastructure choices, not part of this skill. The loop assumes only that a commit — routed through the commit agent — happens at the end of a successful iteration.
 
 ## Where to start reading
 
