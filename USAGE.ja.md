@@ -22,7 +22,9 @@ flowchart TD
     Investigate["🔍 調査エージェント"]
     Implement["🛠 実装エージェント"]
     Doc["📝 ドキュメントエージェント"]
-    Review["✅ レビューエージェント"]
+    CodeReview["✅ コードレビューエージェント"]
+    DocReview["📑 ドキュメントレビューエージェント<br/>(design ↔ impl 整合)"]
+    Commit["📦 コミットエージェント"]
     Docs[("📄 design.md / impl.md<br/>全員がここを読む/書く")]
 
     User -- "指示" --> Main
@@ -31,12 +33,15 @@ flowchart TD
     Main -- "委譲" --> Investigate
     Main -- "委譲" --> Implement
     Main -- "委譲" --> Doc
-    Main -- "委譲" --> Review
+    Main -- "委譲" --> CodeReview
+    Main -- "委譲" --> DocReview
+    Main -- "委譲" --> Commit
 
     Investigate <--> Docs
     Implement <--> Docs
     Doc <--> Docs
-    Review <--> Docs
+    CodeReview <--> Docs
+    DocReview <--> Docs
 ```
 
 この体制と情報流を規約化しているのが、以下 4 スキルの積み重ねです。
@@ -54,12 +59,17 @@ flowchart TD
               │ 実装フェーズを委譲
               ▼
         implement-review-loop
-              │   実装 → lint → レビュー → 分類 → 記録 → 対応 の反復
+              │   実装 → lint → レビュー（コード + docs 並列）→
+              │   分類 → 記録 → 対応 の反復
               │
-              │ step 3（レビュー）で呼び出し
-              ▼
-        code-review-agent
-              5 レンズ並列 → Haiku confidence scoring → 閾値フィルタ
+              │ step 3a: コードレビュー          step 3b: docs レビュー
+              ▼                                   ▼
+        code-review-agent                ドキュメントレビューエージェント
+        5 レンズ並列                     （subagent-orchestration の
+        Haiku confidence scoring          役割定義。独立スキル無し）
+        閾値フィルタ                       design.md ↔ impl.md 整合を
+                                           impl 著者とは別エージェントで
+                                           検証（author != reviewer）
 ```
 
 - **`subagent-orchestration`** が最上位の規約。メインエージェントは対話・意思決定に徹し、作業は全てサブエージェントに委譲する。
@@ -76,11 +86,13 @@ flowchart TD
 5. **ループ 1 周**:
    - 実装エージェントに委譲（`impl.md` が未生成なら完了時に作成 + 構成・実装状況を記録）
    - lint チェック（Claude Code hook 優先、なければオーケストレーター実行）
-   - **レビューエージェントに委譲**（`code-review-agent`）— 5 レンズ並列 → Haiku confidence scoring → 閾値未満を捨てる
-   - 指摘を「仕様・設計」と「実装判断」に分類
-   - 仕様・設計は `design.md` 経由でユーザーへエスカレーション（step 3 と同じプロトコル — 未決事項に書き、チャットはポインタのみ）、それ以外は `impl.md` に周ごと記録
-   - 対応を実装エージェントに委譲し N++
-6. **停止条件** — 「レビュー指摘 0 件 + lint 通過 + 未決事項なし」に達したら、ループの最終 step として **コミットエージェント** に委譲してコミットまで完了させる（`subagent-orchestration` の「git 操作の扱い」参照、プロジェクトに `commit-workflow` などのコミット規約スキルがあれば従わせる）。オーケストレーターは `git add` / `git commit` を直接叩かない。**ユーザーへの動作確認依頼はデフォルトでは省略** — UI/UX に触れる変更、外部システム・不可逆な副作用に触れる変更、`design.md` に動作確認要と明記された項目、ループ内でのユーザー判断内容を目視確認したい場合、のいずれかに該当する場合のみ添える。純粋な内部変更（リファクタリング・型修正・レビュー指摘対応のみ）は完了報告のみで終了する。N == 3 で未達なら `design.md` 未決事項に状況・選択肢・推奨を記録してユーザーへエスカレーション。
+   - **レビューを 2 系統並列で走らせる:**
+     - **3a. コードレビュー** — `code-review-agent` に委譲（5 レンズ並列 → Haiku confidence scoring → 閾値未満を捨てる）
+     - **3b. ドキュメントレビュー** — `subagent-orchestration` に定義された**ドキュメントレビューエージェント役**に委譲（独立スキル無し）。**impl.md を書いた実装エージェントとは別のエージェント**を必ず使う（author != reviewer 担保）。観点は design.md の決定事項が impl.md の実装状況に反映されているか / impl.md の技術的判断が仕様と矛盾していないか / 未決事項が勝手に実装済み扱いされていないか / 履歴不整合。`impl.md` の構造セクション（構成・技術的判断・実装状況）に変化が無い周は skip 可
+   - コード + docs 指摘を合流させ「仕様・設計」と「実装判断」に分類
+   - 仕様・設計は `design.md` 経由でユーザーへエスカレーション（step 3 と同じプロトコル — 未決事項に書き、チャットはポインタのみ）、それ以外は `impl.md` に周ごと記録（各指摘に `出所: code / docs` タグを付ける）
+   - 対応をサブエージェントに委譲し N++（コード修正伴う → 実装エージェント、`impl.md` の書き換えのみで閉じる → ドキュメントエージェント）
+6. **停止条件** — 「コード + docs レビュー指摘とも 0 件 + lint 通過 + 未決事項なし」に達したら、ループの最終 step として **コミットエージェント** に委譲してコミットまで完了させる（`subagent-orchestration` の「git 操作の扱い」参照、プロジェクトに `commit-workflow` などのコミット規約スキルがあれば従わせる）。オーケストレーターは `git add` / `git commit` を直接叩かない。**ユーザーへの動作確認依頼はデフォルトでは省略** — UI/UX に触れる変更、外部システム・不可逆な副作用に触れる変更、`design.md` に動作確認要と明記された項目、ループ内でのユーザー判断内容を目視確認したい場合、のいずれかに該当する場合のみ添える。純粋な内部変更（リファクタリング・型修正・レビュー指摘対応のみ）は完了報告のみで終了する。N == 3 で未達なら `design.md` 未決事項に状況・選択肢・推奨を記録してユーザーへエスカレーション。
 
 > **hook を使った補強（任意）**
 > `implement-review-loop` は最終 step でコミットエージェントに委譲してコミットまで完了しますが、機械的な安全網が欲しい場合は次の 2 種類の hook を別々に組めます:
