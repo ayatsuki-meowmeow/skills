@@ -15,7 +15,8 @@ design.md / impl.md が揃っても、一発の実装で仕様に完全準拠し
 
 ## 前提
 
-- 該当タスクの `design.md` と `impl.md` が存在する（なければ design-impl-docs スキルに従って先に作る）
+- 該当タスクの `design.md` が存在する（無ければ design-impl-docs スキルに従って先に作る）
+- `impl.md` は upfront には要求しない。ループ内で最初に「レビュー指摘と対応」記録などを書くタイミングで作成する（design-impl-docs スキルの作成タイミング規約に従う）
 - サブエージェント（Task / Agent ツール）が利用できる
 - 本ループは subagent-orchestration スキルの下位ワークフロー。役割分担・委譲プロンプトの共通要素・エスカレーションプロトコル・モデル選択・コンテキスト管理などは subagent-orchestration の rules.md に従う
 

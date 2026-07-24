@@ -21,6 +21,6 @@ description: |
 ## 実行手順
 
 1. `references/rules.md` を読む
-2. 該当タスクの design.md / impl.md を読む（なければ rules.md の配置規約に従って作成する）
+2. 該当タスクの design.md を読む（無ければ rules.md の配置規約に従って作成する）。impl.md は既存があれば読み、無ければ upfront には作らず、実装フェーズで最初の実装記録が発生するタイミングで作成する
 3. rules.md の編集権限（design.md = ユーザー + Claude、impl.md = Claude のみ、レビューはいずれもユーザー）と更新タイミングに従って作業する
 4. 仕様の空白・差分の解釈に迷ったら、勝手に決めず未決事項に記録してユーザーに確認する
