@@ -86,11 +86,11 @@ The four skills below stack up to formalize this structure and information flow 
 ## A typical session flow
 
 1. **Task received** — the user requests a feature, fix, or investigation.
-2. **Doc setup** (`design-impl-docs`) — the main agent checks/creates the task's `design.md` (spec/requirements). `impl.md` is **not** created upfront — it's generated on the first record write inside the loop, when there's actually something to record.
+2. **Doc setup** (`design-impl-docs`) — the main agent checks/creates the task's `design.md` (spec/requirements). **`impl.md` must also be created before entering the implementation phase** — write structure, technical decisions, implementation steps, and the commit-split plan upfront to lock in the approach, then start implementation (creation itself may be delegated to a documentation agent).
 3. **Fill in spec gaps** (`subagent-orchestration` + `design-impl-docs`) — never let subagents guess on ambiguous specs. **Write the question, options, trade-offs, and recommendation into `design.md`'s open-questions section**; in chat, say only *"I've added open questions to `design.md` — please write your decision there."* Do **not** list options in chat, do not run Q&A back-and-forth in chat, do not accept verbal decisions without persisting them to `design.md`. This applies regardless of who surfaced the question (a subagent, or the orchestrator noticing a gap on its own). Once the user writes a decision into `design.md`, move it to the decisions section per `design-impl-docs` rules.
-4. **Enter the implementation phase** (`implement-review-loop`) — with `design.md` in place, start the iteration loop (counter N = 1). `impl.md` may not exist yet; the loop creates it on first record.
+4. **Enter the implementation phase** (`implement-review-loop`) — with both `design.md` and `impl.md` in place, start the iteration loop (counter N = 1). Entering the loop with `impl.md` missing is not allowed.
 5. **One iteration**:
-   - Delegate to an implementation agent (if `impl.md` doesn't exist yet, the agent creates it on completion and records the structure/status)
+   - Delegate to an implementation agent (updates the relevant sections of `impl.md`)
    - Run lint (prefer Claude Code hook; if absent, run from the orchestrator)
    - **Run two reviews sequentially (docs first, then code):**
      - **3a. Document review** — delegate to a **document review agent** (a role defined in `subagent-orchestration`, no separate skill). Must be a **different agent from the one that wrote `impl.md`** (reviewer ≠ author). It checks `design.md` ↔ `impl.md` consistency: decisions reflected? technical judgments compatible with the spec? open questions accidentally treated as resolved? historical drift? Skip this pass on iterations where `impl.md`'s structural sections (構成 / 技術的判断 / 実装状況) were not touched.
@@ -125,5 +125,5 @@ Pick an entry point based on your goal.
 |-------|---------------|---------|
 | `subagent-orchestration` | Environment with subagent (Task/Agent) tools available | `design-impl-docs` (context source) / `implement-review-loop` (implementation phase) |
 | `design-impl-docs` | — | — |
-| `implement-review-loop` | `design.md` is prepared (`impl.md` is generated inside the loop) | `code-review-agent` (step 3 review) |
+| `implement-review-loop` | Both `design.md` and `impl.md` are prepared (`impl.md` is created upfront before entering the loop) | `code-review-agent` (step 3 review) |
 | `code-review-agent` | `design.md` is prepared; `impl.md` if it exists is passed as extra context; subagents available | — |
