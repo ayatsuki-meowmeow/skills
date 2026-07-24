@@ -17,6 +17,7 @@ design.md / impl.md が揃っても、一発の実装で仕様に完全準拠し
 
 - 該当タスクの `design.md` が存在する（無ければ design-impl-docs スキルに従って先に作る）
 - `impl.md` はループ開始前に必ず存在する。実装エージェントに委譲する前の方針固めとして事前に作成しておくこと（design-impl-docs スキルの作成タイミング規約に従う）。ループ内では毎周更新する
+- **中核ルールにより、ループ開始前に `impl.md` の初回ドキュメントレビュー（reviewer ≠ author）を通過している必要がある**。upfront 作成しただけの未レビュー `impl.md` でループに突入するのは禁止。初回レビューで発生した仕様乖離・未決先取りは design.md 未決事項に載せてユーザー判断が済むまで halt（design-impl-docs / subagent-orchestration の中核ルール参照）
 - サブエージェント（Task / Agent ツール）が利用できる
 - 本ループは subagent-orchestration スキルの下位ワークフロー。役割分担・委譲プロンプトの共通要素・エスカレーションプロトコル・モデル選択・コンテキスト管理などは subagent-orchestration の rules.md に従う
 

@@ -85,15 +85,20 @@ The four skills below stack up to formalize this structure and information flow 
 
 ## A typical session flow
 
+> **Core rule: every `impl.md` creation or edit is paired with a doc review.** Any time `impl.md` is written to — the upfront creation in Step 2, or any structural update inside a Step 5 iteration — a doc review by a **different agent from the author** (reviewer ≠ author) must run immediately. Skipping the pairing, batching it, or letting the author self-review is not allowed. Drift findings are resolved on the spot; spec/design escalations halt forward progress via `design.md`'s open-questions section until the user decides.
+
 1. **Task received** — the user requests a feature, fix, or investigation.
-2. **Doc setup** (`design-impl-docs`) — the main agent checks/creates the task's `design.md` (spec/requirements). **`impl.md` must also be created before entering the implementation phase** — write structure, technical decisions, implementation steps, and the commit-split plan upfront to lock in the approach, then start implementation (creation itself may be delegated to a documentation agent).
+2. **Doc setup** (`design-impl-docs`) — the main agent checks/creates the task's `design.md` (spec/requirements). **`impl.md` must also be created before entering the implementation phase, and creation is paired with an immediate doc review** (per the core rule above):
+   - **2a. Create `impl.md`** — delegate to a documentation agent to write structure, technical decisions, implementation steps, and the commit-split plan upfront so the approach is locked in before any code is written.
+   - **2b. Review `impl.md`** — delegate to a **different** agent (reviewer ≠ author) to check `design.md` ↔ `impl.md` consistency: are the design decisions reflected? are the technical judgments compatible with the spec? are any open questions accidentally treated as resolved? Findings that can be fixed inside `impl.md` go back to the documentation agent immediately; spec/design escalations go to `design.md`'s open-questions section and halt entry into the loop until the user decides.
+   - Do not enter Step 4 with an unreviewed `impl.md`.
 3. **Fill in spec gaps** (`subagent-orchestration` + `design-impl-docs`) — never let subagents guess on ambiguous specs. **Write the question, options, trade-offs, and recommendation into `design.md`'s open-questions section**; in chat, say only *"I've added open questions to `design.md` — please write your decision there."* Do **not** list options in chat, do not run Q&A back-and-forth in chat, do not accept verbal decisions without persisting them to `design.md`. This applies regardless of who surfaced the question (a subagent, or the orchestrator noticing a gap on its own). Once the user writes a decision into `design.md`, move it to the decisions section per `design-impl-docs` rules.
 4. **Enter the implementation phase** (`implement-review-loop`) — with both `design.md` and `impl.md` in place, start the iteration loop (counter N = 1). Entering the loop with `impl.md` missing is not allowed.
 5. **One iteration**:
    - Delegate to an implementation agent (updates the relevant sections of `impl.md`)
    - Run lint (prefer Claude Code hook; if absent, run from the orchestrator)
    - **Run two reviews sequentially (docs first, then code):**
-     - **3a. Document review** — delegate to a **document review agent** (a role defined in `subagent-orchestration`, no separate skill). Must be a **different agent from the one that wrote `impl.md`** (reviewer ≠ author). It checks `design.md` ↔ `impl.md` consistency: decisions reflected? technical judgments compatible with the spec? open questions accidentally treated as resolved? historical drift? Skip this pass on iterations where `impl.md`'s structural sections (構成 / 技術的判断 / 実装状況) were not touched.
+     - **3a. Document review** — delegate to a **document review agent** (a role defined in `subagent-orchestration`, no separate skill). Must be a **different agent from the one that wrote `impl.md`** (reviewer ≠ author). It checks `design.md` ↔ `impl.md` consistency: decisions reflected? technical judgments compatible with the spec? open questions accidentally treated as resolved? historical drift? This pass fires whenever `impl.md` was edited in the iteration (per the core rule) and may only be skipped when `impl.md`'s structural sections (構成 / 技術的判断 / 実装状況) were not touched at all.
      - **3a-fix (immediate)** — resolve docs findings on the spot: `impl.md`-only fixes go to the documentation agent right away (don't wait for step 6); spec/design escalations (仕様乖離 / 未決先取り) halt the loop via `design.md`'s open-questions section until the user decides. This guarantees a **reconciled `impl.md`** before 3b.
      - **3b. Code review** — delegate to `code-review-agent` with the freshly-reconciled `impl.md` as the reference (5 lenses in parallel → Haiku confidence scoring → drop items below the threshold). Lens 2 (internal consistency) is now reliable.
    - Classify 3b findings as either "spec/design" or "implementation judgment" (3a findings are already resolved above)
@@ -125,5 +130,5 @@ Pick an entry point based on your goal.
 |-------|---------------|---------|
 | `subagent-orchestration` | Environment with subagent (Task/Agent) tools available | `design-impl-docs` (context source) / `implement-review-loop` (implementation phase) |
 | `design-impl-docs` | — | — |
-| `implement-review-loop` | Both `design.md` and `impl.md` are prepared (`impl.md` is created upfront before entering the loop) | `code-review-agent` (step 3 review) |
+| `implement-review-loop` | Both `design.md` and `impl.md` are prepared, and `impl.md` has passed its initial doc review (reviewer ≠ author) before entering the loop | `code-review-agent` (step 3 review) |
 | `code-review-agent` | `design.md` is prepared; `impl.md` if it exists is passed as extra context; subagents available | — |
