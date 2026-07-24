@@ -22,7 +22,9 @@ flowchart TD
     Investigate["🔍 Investigation agent"]
     Implement["🛠 Implementation agent"]
     Doc["📝 Documentation agent"]
-    Review["✅ Review agent"]
+    CodeReview["✅ Code review agent"]
+    DocReview["📑 Doc review agent<br/>(design ↔ impl consistency)"]
+    Commit["📦 Commit agent"]
     Docs[("📄 design.md / impl.md<br/>everyone reads/writes here")]
 
     User -- "instructions" --> Main
@@ -31,12 +33,15 @@ flowchart TD
     Main -- "delegate" --> Investigate
     Main -- "delegate" --> Implement
     Main -- "delegate" --> Doc
-    Main -- "delegate" --> Review
+    Main -- "delegate" --> CodeReview
+    Main -- "delegate" --> DocReview
+    Main -- "delegate" --> Commit
 
     Investigate <--> Docs
     Implement <--> Docs
     Doc <--> Docs
-    Review <--> Docs
+    CodeReview <--> Docs
+    DocReview <--> Docs
 ```
 
 The four skills below stack up to formalize this structure and information flow as conventions.
@@ -54,12 +59,23 @@ The four skills below stack up to formalize this structure and information flow 
               │ delegates the implementation phase
               ▼
         implement-review-loop
-              │   implement → lint → review → classify → record → fix (looped)
+              │   implement → lint → review (docs → code, sequential) →
+              │   classify → record → fix (looped)
               │
-              │ invoked at step 3 (review)
+              │ step 3a: doc review runs first (fast, 2 files)
+              ▼
+        Document review agent (a role defined in subagent-orchestration —
+        no separate skill). Checks design.md ↔ impl.md consistency
+        with a reviewer ≠ author guarantee.
+          → drift findings that are impl.md-only get fixed IMMEDIATELY
+             (via the documentation agent, without waiting for step 6)
+          → spec/design escalations halt the loop until the user decides
+          → clean impl.md is then passed to step 3b
+              │
+              │ step 3b: code review runs on the reconciled impl.md
               ▼
         code-review-agent
-              5 lenses in parallel → Haiku confidence scoring → threshold filter
+        5 lenses in parallel → Haiku confidence scoring → threshold filter
 ```
 
 - **`subagent-orchestration`** is the top-level convention. The main agent focuses on dialogue and decision-making, delegating all work to subagents.
@@ -70,17 +86,20 @@ The four skills below stack up to formalize this structure and information flow 
 ## A typical session flow
 
 1. **Task received** — the user requests a feature, fix, or investigation.
-2. **Doc setup** (`design-impl-docs`) — the main agent checks the task's `design.md` / `impl.md`, and creates them if missing.
-3. **Fill in spec gaps** (`subagent-orchestration` + `design-impl-docs`) — never let subagents guess on ambiguous specs; present options and a recommendation to the user, and record the decision in `design.md`.
-4. **Enter the implementation phase** (`implement-review-loop`) — with `design.md` / `impl.md` in place, start the iteration loop (counter N = 1).
+2. **Doc setup** (`design-impl-docs`) — the main agent checks/creates the task's `design.md` (spec/requirements). `impl.md` is **not** created upfront — it's generated on the first record write inside the loop, when there's actually something to record.
+3. **Fill in spec gaps** (`subagent-orchestration` + `design-impl-docs`) — never let subagents guess on ambiguous specs. **Write the question, options, trade-offs, and recommendation into `design.md`'s open-questions section**; in chat, say only *"I've added open questions to `design.md` — please write your decision there."* Do **not** list options in chat, do not run Q&A back-and-forth in chat, do not accept verbal decisions without persisting them to `design.md`. This applies regardless of who surfaced the question (a subagent, or the orchestrator noticing a gap on its own). Once the user writes a decision into `design.md`, move it to the decisions section per `design-impl-docs` rules.
+4. **Enter the implementation phase** (`implement-review-loop`) — with `design.md` in place, start the iteration loop (counter N = 1). `impl.md` may not exist yet; the loop creates it on first record.
 5. **One iteration**:
-   - Delegate to an implementation agent
+   - Delegate to an implementation agent (if `impl.md` doesn't exist yet, the agent creates it on completion and records the structure/status)
    - Run lint (prefer Claude Code hook; if absent, run from the orchestrator)
-   - **Delegate to the review agent** (`code-review-agent`) — 5 lenses in parallel → Haiku confidence scoring → drop items below the threshold
-   - Classify findings as either "spec/design" or "implementation judgment"
-   - Escalate spec/design findings via `design.md`; record the rest in `impl.md` per iteration
-   - Delegate fixes to the implementation agent and increment N
-6. **Stopping condition** — when "0 review findings + lint passes + no open questions" is reached, delegate to the **commit agent** as the loop's final step (see the "git operations" section of `subagent-orchestration`; the delegation prompt should point at a project-specific commit skill such as `commit-workflow` when available). Once the commit is complete, ask the user for verification and finish. The orchestrator never runs `git add` / `git commit` itself. If N == 3 without meeting the condition, record status, options, and recommendation in the `design.md` open-questions section and escalate to the user.
+   - **Run two reviews sequentially (docs first, then code):**
+     - **3a. Document review** — delegate to a **document review agent** (a role defined in `subagent-orchestration`, no separate skill). Must be a **different agent from the one that wrote `impl.md`** (reviewer ≠ author). It checks `design.md` ↔ `impl.md` consistency: decisions reflected? technical judgments compatible with the spec? open questions accidentally treated as resolved? historical drift? Skip this pass on iterations where `impl.md`'s structural sections (構成 / 技術的判断 / 実装状況) were not touched.
+     - **3a-fix (immediate)** — resolve docs findings on the spot: `impl.md`-only fixes go to the documentation agent right away (don't wait for step 6); spec/design escalations (仕様乖離 / 未決先取り) halt the loop via `design.md`'s open-questions section until the user decides. This guarantees a **reconciled `impl.md`** before 3b.
+     - **3b. Code review** — delegate to `code-review-agent` with the freshly-reconciled `impl.md` as the reference (5 lenses in parallel → Haiku confidence scoring → drop items below the threshold). Lens 2 (internal consistency) is now reliable.
+   - Classify 3b findings as either "spec/design" or "implementation judgment" (3a findings are already resolved above)
+   - Escalate spec/design findings via `design.md` (same protocol as step 3 — write to open-questions, chat is pointer-only); record the rest in `impl.md` per iteration with an `出所: code / docs` tag (docs entries retained for traceability even though already applied)
+   - Delegate code fixes to the implementation agent and increment N
+6. **Stopping condition** — when "0 findings from both doc review (after 3a-fix) and code review + lint passes + no open questions" is reached, delegate to the **commit agent** as the loop's final step (see the "git operations" section of `subagent-orchestration`; the delegation prompt should point at a project-specific commit skill such as `commit-workflow` when available). The orchestrator never runs `git add` / `git commit` itself. **User verification after commit is opt-in, not default** — request it only when the change touches UI/UX, external systems or irreversible side effects, `design.md` explicitly flags verification, or user decisions in the loop need visual confirmation. For pure internal changes (refactors, type fixes, review-finding cleanups), just report completion and finish. If N == 3 without meeting the condition, record status, options, and recommendation in the `design.md` open-questions section and escalate to the user.
 
 > **Note on hook-based enforcement (optional)**
 > `implement-review-loop` runs the final commit via a commit agent, but two orthogonal hook setups can back it up if you want a mechanical safety net:
@@ -97,8 +116,8 @@ Pick an entry point based on your goal.
 |------|-------------|
 | Adopt the whole workflow across all four skills | Read `subagent-orchestration` → `design-impl-docs` → `implement-review-loop` → `code-review-agent` in that order |
 | Only need session resumption / context sharing | `design-impl-docs` alone |
-| Want the implementation phase as an iteration loop (docs already in place) | Skim `design-impl-docs`, then `implement-review-loop` |
-| Only want to switch reviews to the 5-lens style | `code-review-agent` (requires `design.md` / `impl.md` to already exist) |
+| Want the implementation phase as an iteration loop (`design.md` already in place) | Skim `design-impl-docs`, then `implement-review-loop` |
+| Only want to switch reviews to the 5-lens style | `code-review-agent` (requires `design.md`; `impl.md` may be absent at first) |
 
 ## Dependency summary
 
@@ -106,5 +125,5 @@ Pick an entry point based on your goal.
 |-------|---------------|---------|
 | `subagent-orchestration` | Environment with subagent (Task/Agent) tools available | `design-impl-docs` (context source) / `implement-review-loop` (implementation phase) |
 | `design-impl-docs` | — | — |
-| `implement-review-loop` | `design.md` / `impl.md` are prepared | `code-review-agent` (step 3 review) |
-| `code-review-agent` | `design.md` / `impl.md` are prepared; subagents available | — |
+| `implement-review-loop` | `design.md` is prepared (`impl.md` is generated inside the loop) | `code-review-agent` (step 3 review) |
+| `code-review-agent` | `design.md` is prepared; `impl.md` if it exists is passed as extra context; subagents available | — |

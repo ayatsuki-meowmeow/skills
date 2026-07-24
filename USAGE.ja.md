@@ -22,7 +22,9 @@ flowchart TD
     Investigate["🔍 調査エージェント"]
     Implement["🛠 実装エージェント"]
     Doc["📝 ドキュメントエージェント"]
-    Review["✅ レビューエージェント"]
+    CodeReview["✅ コードレビューエージェント"]
+    DocReview["📑 ドキュメントレビューエージェント<br/>(design ↔ impl 整合)"]
+    Commit["📦 コミットエージェント"]
     Docs[("📄 design.md / impl.md<br/>全員がここを読む/書く")]
 
     User -- "指示" --> Main
@@ -31,12 +33,15 @@ flowchart TD
     Main -- "委譲" --> Investigate
     Main -- "委譲" --> Implement
     Main -- "委譲" --> Doc
-    Main -- "委譲" --> Review
+    Main -- "委譲" --> CodeReview
+    Main -- "委譲" --> DocReview
+    Main -- "委譲" --> Commit
 
     Investigate <--> Docs
     Implement <--> Docs
     Doc <--> Docs
-    Review <--> Docs
+    CodeReview <--> Docs
+    DocReview <--> Docs
 ```
 
 この体制と情報流を規約化しているのが、以下 4 スキルの積み重ねです。
@@ -54,12 +59,22 @@ flowchart TD
               │ 実装フェーズを委譲
               ▼
         implement-review-loop
-              │   実装 → lint → レビュー → 分類 → 記録 → 対応 の反復
+              │   実装 → lint → レビュー（docs → code の sequential）→
+              │   分類 → 記録 → 対応 の反復
               │
-              │ step 3（レビュー）で呼び出し
+              │ step 3a: ドキュメントレビューを先に走らせる（軽量、2 ファイル）
+              ▼
+        ドキュメントレビューエージェント（subagent-orchestration の役割定義、
+        独立スキル無し）。design.md ↔ impl.md 整合を impl 著者とは別
+        エージェントで検証（author != reviewer）。
+          → impl.md 修正で閉じる drift は 3a 内で即修正（step 6 を待たない）
+          → 仕様乖離・未決先取りは design.md 経由でエスカレーション（halt）
+          → reconciled 済み impl.md を 3b に渡す
+              │
+              │ step 3b: reconciled 済み impl.md をリファレンスに走らせる
               ▼
         code-review-agent
-              5 レンズ並列 → Haiku confidence scoring → 閾値フィルタ
+        5 レンズ並列 → Haiku confidence scoring → 閾値フィルタ
 ```
 
 - **`subagent-orchestration`** が最上位の規約。メインエージェントは対話・意思決定に徹し、作業は全てサブエージェントに委譲する。
@@ -70,17 +85,20 @@ flowchart TD
 ## 典型的なセッションの流れ
 
 1. **タスク受領** — ユーザーが機能追加・修正・調査などを依頼する。
-2. **ドキュメント準備**（`design-impl-docs`）— メインエージェントが該当タスクの `design.md` / `impl.md` を確認し、なければ作成する。
-3. **仕様の空白を埋める**（`subagent-orchestration` + `design-impl-docs`）— 曖昧な仕様・要件はサブエージェントに勝手に判断させず、選択肢と推奨をユーザーに提示 → 決定を `design.md` に記録する。
-4. **実装フェーズ開始**（`implement-review-loop`）— `design.md` / `impl.md` が揃った状態で反復ループを開始（反復カウンタ N = 1）。
+2. **ドキュメント準備**（`design-impl-docs`）— メインエージェントが該当タスクの `design.md`（仕様・要件）を確認し、無ければ作成する。**`impl.md` は upfront には作らない** — ループ内で最初に記録が発生するタイミングで生成する（空ファイルを先置きしても中身が無い）。
+3. **仕様の空白を埋める**（`subagent-orchestration` + `design-impl-docs`）— 曖昧な仕様・要件はサブエージェントにもオーケストレーター自身にも判断させない。**質問・選択肢・トレードオフ・推奨を `design.md` の「未決事項」に書き込み**、チャットでは「`design.md` の未決事項に判断を記入してください」とだけ伝えて停止する。**チャットで選択肢を並べたり、Q&A のやり取りを繰り返したり、口頭合意で先に進んだりしない**（発生源がサブエージェントでも、オーケストレーター自身が気づいた場合でも同じ）。ユーザーが `design.md` に判断を書き込んだら、`design-impl-docs` の規約に従って「決定事項」に転記する。
+4. **実装フェーズ開始**（`implement-review-loop`）— `design.md` が揃った状態で反復ループを開始（反復カウンタ N = 1）。`impl.md` は未存在でも問題無く、ループの初回記録時に生成される。
 5. **ループ 1 周**:
-   - 実装エージェントに委譲
+   - 実装エージェントに委譲（`impl.md` が未生成なら完了時に作成 + 構成・実装状況を記録）
    - lint チェック（Claude Code hook 優先、なければオーケストレーター実行）
-   - **レビューエージェントに委譲**（`code-review-agent`）— 5 レンズ並列 → Haiku confidence scoring → 閾値未満を捨てる
-   - 指摘を「仕様・設計」と「実装判断」に分類
-   - 仕様・設計は `design.md` 経由でユーザーへエスカレーション、それ以外は `impl.md` に周ごと記録
-   - 対応を実装エージェントに委譲し N++
-6. **停止条件** — 「レビュー指摘 0 件 + lint 通過 + 未決事項なし」に達したら、ループの最終 step として **コミットエージェント** に委譲してコミットまで完了させ（`subagent-orchestration` の「git 操作の扱い」参照、プロジェクトに `commit-workflow` などのコミット規約スキルがあれば従わせる）、その上でユーザーに動作確認を依頼して終了。オーケストレーターは `git add` / `git commit` を直接叩かない。N == 3 で未達なら `design.md` 未決事項に状況・選択肢・推奨を記録してユーザーへエスカレーション。
+   - **レビューを sequential（docs → code の順）で走らせる:**
+     - **3a. ドキュメントレビュー** — `subagent-orchestration` に定義された**ドキュメントレビューエージェント役**に委譲（独立スキル無し）。**impl.md を書いた実装エージェントとは別のエージェント**を必ず使う（author != reviewer 担保）。観点は design.md の決定事項が impl.md の実装状況に反映されているか / impl.md の技術的判断が仕様と矛盾していないか / 未決事項が勝手に実装済み扱いされていないか / 履歴不整合。`impl.md` の構造セクション（構成・技術的判断・実装状況）に変化が無い周は skip 可
+     - **3a-fix（即対応）** — 3a の指摘は即座に処理する: `impl.md` 修正で閉じる指摘はドキュメントエージェントに委譲してその場で修正（step 6 の fix サイクルを待たない）、仕様乖離・未決先取りは `design.md` 未決事項に書いてユーザーへエスカレーション（loop halt）。これで **reconciled 済みの `impl.md`** を 3b に渡せる状態を作る
+     - **3b. コードレビュー** — `code-review-agent` に委譲。reconciled 済みの `impl.md` をリファレンスに走らせる（5 レンズ並列 → Haiku confidence scoring → 閾値未満を捨てる）。Lens 2（内部整合性）が信頼できる状態
+   - 3b 指摘を「仕様・設計」と「実装判断」に分類（3a 指摘は 3a-fix で解消済み）
+   - 仕様・設計は `design.md` 経由でユーザーへエスカレーション（step 3 と同じプロトコル — 未決事項に書き、チャットはポインタのみ）、それ以外は `impl.md` に周ごと記録（各指摘に `出所: code / docs` タグ、docs 分はトレーサビリティとして残す）
+   - コード修正対応を実装エージェントに委譲し N++
+6. **停止条件** — 「3a-fix 適用後の docs レビュー指摘 0 件 + 3b コードレビュー指摘 0 件 + lint 通過 + 未決事項なし」に達したら、ループの最終 step として **コミットエージェント** に委譲してコミットまで完了させる（`subagent-orchestration` の「git 操作の扱い」参照、プロジェクトに `commit-workflow` などのコミット規約スキルがあれば従わせる）。オーケストレーターは `git add` / `git commit` を直接叩かない。**ユーザーへの動作確認依頼はデフォルトでは省略** — UI/UX に触れる変更、外部システム・不可逆な副作用に触れる変更、`design.md` に動作確認要と明記された項目、ループ内でのユーザー判断内容を目視確認したい場合、のいずれかに該当する場合のみ添える。純粋な内部変更（リファクタリング・型修正・レビュー指摘対応のみ）は完了報告のみで終了する。N == 3 で未達なら `design.md` 未決事項に状況・選択肢・推奨を記録してユーザーへエスカレーション。
 
 > **hook を使った補強（任意）**
 > `implement-review-loop` は最終 step でコミットエージェントに委譲してコミットまで完了しますが、機械的な安全網が欲しい場合は次の 2 種類の hook を別々に組めます:
@@ -97,8 +115,8 @@ flowchart TD
 |--------------|------|
 | 4 スキルを丸ごと導入して開発ワークフローを再構築したい | `subagent-orchestration` → `design-impl-docs` → `implement-review-loop` → `code-review-agent` の順に読む |
 | セッション再開・コンテキスト共有の運用だけ導入したい | `design-impl-docs` 単独 |
-| 実装フェーズを反復ループ化したい（既にドキュメント運用がある） | `design-impl-docs` を軽く確認 → `implement-review-loop` |
-| レビューだけ 5 レンズ化したい | `code-review-agent`（前提として `design.md` / `impl.md` が揃っている必要あり） |
+| 実装フェーズを反復ループ化したい（既に `design.md` 運用がある） | `design-impl-docs` を軽く確認 → `implement-review-loop` |
+| レビューだけ 5 レンズ化したい | `code-review-agent`（前提として `design.md` が必要。`impl.md` は無くてもよい） |
 
 ## 依存関係のまとめ
 
@@ -106,5 +124,5 @@ flowchart TD
 |--------|------|-----------|
 | `subagent-orchestration` | サブエージェントが利用可能な環境 | `design-impl-docs`（コンテキスト源） / `implement-review-loop`（実装フェーズ） |
 | `design-impl-docs` | — | — |
-| `implement-review-loop` | `design.md` / `impl.md` が整備済み | `code-review-agent`（step 3 レビュー） |
-| `code-review-agent` | `design.md` / `impl.md` が整備済み、サブエージェントが利用可能 | — |
+| `implement-review-loop` | `design.md` が整備済み（`impl.md` はループ内で生成） | `code-review-agent`（step 3 レビュー） |
+| `code-review-agent` | `design.md` が整備済み、`impl.md` があれば追加コンテキストとして渡す、サブエージェントが利用可能 | — |
