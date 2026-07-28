@@ -1,15 +1,16 @@
 {
   "skill_name": "subagent-orchestration",
-  "note": "サブエージェント委譲プロトコルの with/without 比較。単に「サブエージェントを起こすか」ではなく、本スキル固有の観測点（小タスクも委譲 / design.md 経由エスカレーション / モデル使い分け / 委譲プロンプトの構造 / 並列化 / impl.md 更新）を検証する。",
+  "note": "サブエージェント委譲プロトコルの with/without 比較。単に「サブエージェントを起こすか」ではなく、本スキル固有の観測点（委譲の判断基準の境界 / design.md 経由エスカレーション / モデル使い分け / 委譲プロンプトの構造 / 並列化 / impl.md 更新）を検証する。",
   "evals": [
     {
       "id": "eval-1-small-fix",
-      "prompt": "src/utils/format.ts の formatDate 関数で、null を渡すと TypeError が出ています。null の場合は空文字を返すように直してください。修正内容とテスト方針を教えてください。",
-      "focus": "小さい修正でも委譲するか",
+      "prompt": "src/utils/format.ts の formatDate 関数で、null を渡すと TypeError が出ています。null の場合は空文字を返すように直してください（null 以外の入力の挙動は変えないでください）。修正できたらコミットまで進めてください。",
+      "focus": "委譲の判断基準の境界を正しく適用するか（コードは直接編集、git と docs は委譲）",
       "assertions": [
-        {"name": "delegates_even_for_small_task", "description": "1 ファイル・数行の修正でも実装エージェントに委譲する計画になっている"},
-        {"name": "does_not_direct_edit", "description": "「小さいから自分で編集する」と決めていない"},
-        {"name": "delegation_prompt_mentions_impl_md", "description": "実装エージェントへの委譲プロンプトに impl.md への言及がある"}
+        {"name": "does_not_delegate_trivial_code_fix", "description": "単一ファイル・数行・仕様判断なし・lint / typecheck で検証が閉じる修正なので、実装エージェントを起動せずオーケストレーターが直接編集する計画になっている"},
+        {"name": "states_delegation_criteria_boundary", "description": "直接編集を選んだ根拠を「委譲の判断基準」の境界（単一ファイル / 数行 / 仕様判断を伴わない / lint・typecheck で検証が閉じる）に照らして示している"},
+        {"name": "delegates_commit_regardless_of_size", "description": "コミットは規模を問わずコミットエージェントに委譲し、オーケストレーター自身が git add / git commit を直接呼ばない"},
+        {"name": "keeps_docs_flow_without_size_exemption", "description": "規模を理由に docs を省略していない。design.md の確認・作成と、実装フェーズ前の impl.md 作成、および impl.md 作成に伴う別エージェント（reviewer != author）のドキュメントレビューを計画に含めている"}
       ]
     },
     {
