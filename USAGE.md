@@ -18,7 +18,7 @@ Roles and information flow are captured concisely by the diagram below.
 ```mermaid
 flowchart TD
     User["👤 User<br/>・decision-maker on spec/requirements<br/>・reviews design.md and hands back decisions"]
-    Main["🎯 Main Claude (orchestrator)<br/>・dialogue, task decomposition, delegation, acceptance, summary reporting<br/>・does not write code directly"]
+    Main["🎯 Main Claude (orchestrator)<br/>・dialogue, task decomposition, delegation, acceptance, summary reporting<br/>・delegates rather than writing code<br/>(minor fixes are the exception — see rules.md)"]
     Investigate["🔍 Investigation agent"]
     Implement["🛠 Implementation agent"]
     Doc["📝 Documentation agent"]
@@ -78,7 +78,7 @@ The four skills below stack up to formalize this structure and information flow 
         5 lenses in parallel → Haiku confidence scoring → threshold filter
 ```
 
-- **`subagent-orchestration`** is the top-level convention. The main agent focuses on dialogue and decision-making, delegating all work to subagents.
+- **`subagent-orchestration`** is the top-level convention. The main agent focuses on dialogue and decision-making, delegating the work that produces a lot of intermediate output (what gets delegated is decided by that skill's "委譲の判断基準" section).
 - **`design-impl-docs`** is the shared foundation across every phase. Specs live in `design.md`, implementation details in `impl.md`.
 - **`implement-review-loop`** is a sub-workflow dedicated to the implementation phase. It runs under `subagent-orchestration`.
 - **`code-review-agent`** is a review-only sub-workflow invoked at step 3 (review) of `implement-review-loop`.

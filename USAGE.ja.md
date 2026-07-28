@@ -18,7 +18,7 @@
 ```mermaid
 flowchart TD
     User["👤 ユーザー<br/>・仕様/要件の意思決定者<br/>・design.md をレビューして決定を返す"]
-    Main["🎯 メイン Claude(オーケストレーター)<br/>・対話、タスク分解、委譲、検収、要約報告<br/>・自分ではコードを書かない"]
+    Main["🎯 メイン Claude(オーケストレーター)<br/>・対話、タスク分解、委譲、検収、要約報告<br/>・原則コードを書かず委譲する<br/>（軽微な修正は例外。判断基準は rules.md）"]
     Investigate["🔍 調査エージェント"]
     Implement["🛠 実装エージェント"]
     Doc["📝 ドキュメントエージェント"]
@@ -77,7 +77,7 @@ flowchart TD
         5 レンズ並列 → Haiku confidence scoring → 閾値フィルタ
 ```
 
-- **`subagent-orchestration`** が最上位の規約。メインエージェントは対話・意思決定に徹し、作業は全てサブエージェントに委譲する。
+- **`subagent-orchestration`** が最上位の規約。メインエージェントは対話・意思決定に徹し、中間出力の多い作業をサブエージェントに委譲する（何を委譲するかは同スキルの「委譲の判断基準」で決める）。
 - **`design-impl-docs`** は全フェーズ共通の土台。仕様は `design.md`、実装詳細は `impl.md` に集約する。
 - **`implement-review-loop`** は実装フェーズ専用のサブワークフロー。`subagent-orchestration` の配下で動く。
 - **`code-review-agent`** は `implement-review-loop` の step 3（レビュー）で呼ばれる、レビュー専用のサブワークフロー。
