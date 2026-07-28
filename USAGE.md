@@ -63,10 +63,12 @@ The four skills below stack up to formalize this structure and information flow 
               │   classify → record → fix (looped)
               │
               │ step 3a: doc review runs first (fast, 2 files)
+              │          only on iterations that touch impl.md's approach sections
               ▼
         Document review agent (a role defined in subagent-orchestration —
         no separate skill). Checks design.md ↔ impl.md consistency
-        with a reviewer ≠ author guarantee.
+        with a reviewer ≠ author guarantee. No lens covers
+        design.md ↔ impl.md, so this cannot be replaced by code review.
           → drift findings that are impl.md-only get fixed IMMEDIATELY
              (via the documentation agent, without waiting for step 6)
           → spec/design escalations halt the loop until the user decides
@@ -85,7 +87,9 @@ The four skills below stack up to formalize this structure and information flow 
 
 ## A typical session flow
 
-> **Core rule: writing to `impl.md` is paired with a doc review.** Any time `impl.md` is written to, a doc review by a **different agent from the author** (reviewer ≠ author) must run immediately. Drift findings are resolved on the spot; spec/design escalations halt forward progress via `design.md`'s open-questions section until the user decides.
+> **Core rule: writing to `impl.md`'s approach sections is paired with a doc review.** Whenever a write touches `impl.md`'s 構成 / 技術的判断 (plus the upfront creation, and any update right after `design.md` changed), a doc review by a **different agent from the author** (reviewer ≠ author) must run immediately. Drift findings are resolved on the spot; spec/design escalations halt forward progress via `design.md`'s open-questions section until the user decides. Iterations that only tick 実装状況 status or append to 「レビュー指摘と対応」 may skip it.
+>
+> This review is the only thing that cross-checks `design.md` against `impl.md` — none of `code-review-agent`'s five lenses do. Code review is not a substitute for it.
 >
 > The canonical statement of the trigger conditions, skip conditions, and resolution policy lives in the "中核ルール" section of [`design-impl-docs`](./design-impl-docs/references/rules.md). This file is a map of the whole workflow — it does not hold rule bodies, it points at the relevant section of each skill.
 
@@ -100,7 +104,7 @@ The four skills below stack up to formalize this structure and information flow 
    - Delegate to an implementation agent (updates the relevant sections of `impl.md`)
    - Run lint (prefer Claude Code hook; if absent, run from the orchestrator)
    - **Run two reviews sequentially (docs first, then code):**
-     - **3a. Document review** — delegate to a **document review agent** (a role defined in `subagent-orchestration`, no separate skill). Must be a **different agent from the one that wrote `impl.md`** (reviewer ≠ author). It checks `design.md` ↔ `impl.md` consistency; the review criteria come from that role definition and the trigger conditions from the core rule.
+     - **3a. Document review** (conditional) — delegate to a **document review agent** (a role defined in `subagent-orchestration`, no separate skill). Must be a **different agent from the one that wrote `impl.md`** (reviewer ≠ author). It checks `design.md` ↔ `impl.md` consistency; the review criteria come from that role definition and the trigger conditions from the core rule (iterations that leave the approach sections untouched skip straight to 3b).
      - **3a-fix (immediate)** — resolve docs findings on the spot: `impl.md`-only fixes go to the documentation agent right away (don't wait for step 6); spec/design escalations (仕様乖離 / 未決先取り) halt the loop via `design.md`'s open-questions section until the user decides. This guarantees a **reconciled `impl.md`** before 3b.
      - **3b. Code review** — delegate to `code-review-agent` with the freshly-reconciled `impl.md` as the reference (5 lenses in parallel → Haiku confidence scoring → drop items below the threshold). Lens 2 (internal consistency) is now reliable.
    - Classify 3b findings as either "spec/design" or "implementation judgment" (3a findings are already resolved above)
