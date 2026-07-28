@@ -31,8 +31,8 @@
         {"name": "delegates_to_investigation_agent", "description": "調査エージェントに委譲する計画である"},
         {"name": "model_opus_selected", "description": "サブエージェントの model に opus を指定している"},
         {"name": "prompt_mentions_design_md_or_impl_md", "description": "委譲プロンプトに design.md / impl.md のパスと「まず読め」の指示がある"},
-        {"name": "prompt_asks_context_self_report", "description": "委譲プロンプトに「コンテキスト使用率の自己申告」の指示がある"},
-        {"name": "prompt_includes_escalation_boundary", "description": "「仕様の疑問は自分で判断せず未解決の疑問として返せ」の指示がある"}
+        {"name": "prompt_includes_escalation_boundary", "description": "「仕様の疑問は自分で判断せず未解決の疑問として返せ」の指示がある"},
+        {"name": "prompt_omits_context_self_report", "description": "委譲プロンプトに「コンテキスト使用率の自己申告」を求める指示が含まれていない（この規約は撤廃済み）"}
       ]
     },
     {
