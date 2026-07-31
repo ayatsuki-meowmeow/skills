@@ -59,7 +59,7 @@ The four skills below stack up to formalize this structure and information flow 
               │ delegates the implementation phase
               ▼
         implement-review-loop
-              │   implement → lint → review (docs → code, sequential) →
+              │   implement → lint + test → review (docs → code, sequential) →
               │   classify → record → fix (looped)
               │
               │ step 3a: doc review runs first (fast, 2 files)
@@ -105,7 +105,7 @@ The four skills below stack up to formalize this structure and information flow 
 4. **Enter the implementation phase** (`implement-review-loop`) — with both `design.md` and `impl.md` in place, start the iteration loop (counter N = 1). Entering the loop with `impl.md` missing is not allowed.
 5. **One iteration**:
    - Delegate to an implementation agent (updates the relevant sections of `impl.md`)
-   - Run lint (prefer Claude Code hook; if absent, run from the orchestrator)
+   - **Run mechanical verification (lint + test)** — prefer Claude Code hooks; if absent, run from the orchestrator. Tests are the only gate covering runtime correctness (reality grounding) that the review agents cannot substitute for, so do not skip when tests exist. If tests are absent for this range, record that explicitly in `impl.md` (silent skip is forbidden) and expect a user verification request at step 6.
    - **Run two reviews sequentially (docs first, then code):**
      - **3a. Document review** (conditional) — delegate to a **document review agent** (a role defined in `subagent-orchestration`, no separate skill). Must be a **different agent from the one that wrote `impl.md`** (reviewer ≠ author). It checks `design.md` ↔ `impl.md` consistency; the review criteria come from that role definition and the trigger conditions from the core rule (iterations that leave the approach sections untouched skip straight to 3b).
      - **3a-fix (immediate)** — resolve docs findings on the spot: `impl.md`-only fixes go to the documentation agent right away (don't wait for step 6); spec/design escalations (仕様乖離 / 未決先取り) halt the loop via `design.md`'s open-questions section until the user decides. This guarantees a **reconciled `impl.md`** before 3b.
@@ -113,7 +113,7 @@ The four skills below stack up to formalize this structure and information flow 
    - Classify 3b findings as either "spec/design" or "implementation judgment" (3a findings are already resolved above)
    - Escalate spec/design findings to the user (same protocol as step 3, route selection included — though review-derived findings usually want a traceable rationale, so the `design.md` route is the normal choice); record the rest in `impl.md` per iteration with an `出所: code / docs` tag (docs entries retained for traceability even though already applied)
    - Delegate code fixes to the implementation agent and increment N
-6. **Stopping condition** — when "0 findings from both doc review (after 3a-fix) and code review + lint passes + no open questions" is reached, delegate to the **commit agent** as the loop's final step (see the "git operations" section of `subagent-orchestration`; the delegation prompt should point at a project-specific commit skill such as `commit-workflow` when available). The orchestrator never runs `git add` / `git commit` itself. **User verification after commit is opt-in, not default** — request it only when the change touches UI/UX, external systems or irreversible side effects, `design.md` explicitly flags verification, or user decisions in the loop need visual confirmation. For pure internal changes (refactors, type fixes, review-finding cleanups), just report completion and finish. If N == 3 without meeting the condition, record status, options, and recommendation in the `design.md` open-questions section and escalate to the user.
+6. **Stopping condition** — when "0 findings from both doc review (after 3a-fix) and code review + lint passes + **test passes (or explicit skip record in `impl.md`)** + no open questions" is reached, delegate to the **commit agent** as the loop's final step (see the "git operations" section of `subagent-orchestration`; the delegation prompt should point at a project-specific commit skill such as `commit-workflow` when available). The orchestrator never runs `git add` / `git commit` itself. **User verification after commit is opt-in, not default** — request it only when the change touches UI/UX, external systems or irreversible side effects, `design.md` explicitly flags verification, user decisions in the loop need visual confirmation, or **tests were skipped in step 5** (in which case runtime integrity has not been machine-verified and the user's eyes are the only remaining reality-grounding). For pure internal changes with tests passing (refactors, type fixes, review-finding cleanups), just report completion and finish. If N == 3 without meeting the condition, record status, options, and recommendation in the `design.md` open-questions section and escalate to the user.
 
 > **Note on hook-based enforcement (optional)**
 > `implement-review-loop` runs the final commit via a commit agent, but two orthogonal hook setups can back it up if you want a mechanical safety net:
