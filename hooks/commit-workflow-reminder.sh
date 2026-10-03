@@ -40,7 +40,7 @@ case "$cmd" in
   *) exit 0 ;;
 esac
 
-reminder='⚠️ commit-workflow スキルの規約を確認してからコミットすること:\n1. 意味単位ごとに分割（1コミット=1意味単位 / `git add -A`・`git add .` 禁止、ファイルを明示して add）\n2. メッセージ = 英語の1行サマリ + 空行 + 日本語本文\n3. `Co-Authored-By` などのフッター・AIサインを付けない\n4. コミッターは依頼者本人のみ（user.name / user.email を変更しない）\n判断に迷う分割は勝手にまとめず確認を仰ぐ。詳細は commit-workflow スキルを参照。'
+reminder='⚠️ commit-workflow スキルの規約を確認してからコミットすること:\n1. 意味単位ごとに分割（1コミット=1意味単位 / `git add -A`・`git add .` 禁止、ファイルを明示して add）\n2. メッセージ = 英語の1行サマリ + 空行 + 日本語本文\n3. コミッターは依頼者本人のみ（user.name / user.email を変更しない）\n判断に迷う分割は勝手にまとめず確認を仰ぐ。詳細は commit-workflow スキルを参照。'
 
 emit_reminder() {
   printf '{"hookSpecificOutput":{"hookEventName":"PreToolUse","additionalContext":"%s"}}\n' "$reminder"
